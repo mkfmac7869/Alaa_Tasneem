@@ -1,0 +1,21 @@
+import { buildIcs } from "@/lib/calendar";
+
+export function generateStaticParams() {
+  return [{ locale: "ar" }, { locale: "en" }];
+}
+
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ locale: string }> }
+) {
+  const { locale } = await params;
+  const lang = locale === "en" ? "en" : "ar";
+
+  return new Response(buildIcs(lang), {
+    headers: {
+      "Content-Type": "text/calendar; charset=utf-8",
+      "Content-Disposition": 'attachment; filename="alaa-tasneem-wedding.ics"',
+      "Cache-Control": "public, max-age=3600",
+    },
+  });
+}

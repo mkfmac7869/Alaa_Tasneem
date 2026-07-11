@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "دعوة زفاف {couple}",
+    "description": "بكل الحب، ندعوكم لمشاركتنا فرحة العمر في أمسية تحت سماء مفتوحة."
+  },
+  "intro": {
+    "loadingLabel": "دعوة زفاف {couple}",
+    "open": "افتح الدعوة",
+    "openAria": "افتح دعوة زفاف {couple}",
+    "skip": "تخطي"
+  },
+  "hero": {
+    "kicker": "دعوة زفاف",
+    "connector": "و",
+    "invite": "بكل الحب، يسعدنا أن نشارككم بداية فصل جديد من حكايتنا",
+    "scroll": "مرّر للأسفل",
+    "imageAlt": "حديقة الحفل عند الغسق، بين النخيل وعلى ضفاف البحيرة وأضواء المساء الدافئة"
+  },
+  "message": {
+    "kicker": "الدعوة",
+    "body": "بقلوب يملؤها الحب والفرح، نتشرف بدعوتكم لمشاركتنا أجمل لحظات العمر والاحتفال بزفاف {couple}."
+  },
+  "countdown": {
+    "kicker": "وللفرح موعد",
+    "days": "يوم",
+    "hours": "ساعة",
+    "minutes": "دقيقة",
+    "seconds": "ثانية",
+    "arrived": "اليوم تبدأ حكايتنا الجديدة",
+    "ariaLabel": "الوقت المتبقي حتى الحفل"
+  },
+  "details": {
+    "kicker": "الموعد",
+    "hijriPrefix": "الموافق",
+    "ceremonyAt": "يبدأ الحفل في تمام الساعة {time}",
+    "arrivalNote": "نرجو التكرم بالحضور قبل بدء الحفل بـ{minutes} دقيقة"
+  },
+  "venue": {
+    "kicker": "المكان",
+    "description": "أمسية في الهواء الطلق بين النخيل وعلى ضفاف البحيرة، تحت أضواء المساء الدافئة.",
+    "directions": "الاتجاهات إلى الموقع",
+    "appleMaps": "فتح في خرائط Apple",
+    "imageAlt": "حديقة فيري جاردن — نخيل وبحيرة ونافورة في ضوء المساء"
+  },
+  "calendar": {
+    "kicker": "احفظوا التاريخ",
+    "title": "أضف الموعد إلى التقويم",
+    "google": "تقويم Google",
+    "apple": "تقويم Apple",
+    "outlook": "Outlook",
+    "ics": "تنزيل ملف التقويم",
+    "eventTitle": "حفل زفاف {couple}",
+    "eventDescription": "بكل الحب، ندعوكم لمشاركتنا فرحة زفاف {couple}."
+  },
+  "music": {
+    "play": "تشغيل الموسيقى",
+    "pause": "إيقاف الموسيقى"
+  },
+  "lang": {
+    "switchTo": "English",
+    "ariaLabel": "Switch to English"
+  },
+  "closing": {
+    "message": "حضوركم يكتمل به فرحنا",
+    "monogramAlt": "شعار {couple}"
+  },
+  "qr": {
+    "kicker": "دعوة زفاف",
+    "scan": "امسح الرمز لفتح الدعوة",
+    "print": "طباعة",
+    "downloadPng": "تنزيل PNG",
+    "downloadSvg": "تنزيل SVG",
+    "light": "نسخة فاتحة",
+    "dark": "نسخة داكنة",
+    "backToInvitation": "العودة إلى الدعوة"
+  },
+  "enter": {
+    "title": "دعوة خاصة",
+    "prompt": "أدخلوا رمز الدعوة",
+    "placeholder": "رمز الدعوة",
+    "submit": "دخول",
+    "error": "الرمز غير صحيح، حاولوا مرة أخرى"
+  },
+  "common": {
+    "monogramAlt": "شعار {couple} — الحرفان A وT متشابكان",
+    "and": "و"
+  }
+}

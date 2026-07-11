@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "title": "{couple} — Wedding Invitation",
+    "description": "With love, we invite you to celebrate the beginning of our forever, one evening under an open sky."
+  },
+  "intro": {
+    "loadingLabel": "{couple} wedding invitation",
+    "open": "Open Invitation",
+    "openAria": "Open the wedding invitation of {couple}",
+    "skip": "Skip"
+  },
+  "hero": {
+    "kicker": "Wedding Invitation",
+    "connector": "&",
+    "invite": "With love, we invite you to celebrate the beginning of our forever.",
+    "scroll": "Scroll",
+    "imageAlt": "The garden venue at dusk — palm trees by the lake under warm evening lights"
+  },
+  "message": {
+    "kicker": "The Invitation",
+    "body": "With hearts filled with love and joy, we invite you to share one of the most beautiful moments of our lives as we celebrate the wedding of {couple}."
+  },
+  "countdown": {
+    "kicker": "Counting the days",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "arrived": "Today, our new chapter begins.",
+    "ariaLabel": "Time remaining until the ceremony"
+  },
+  "details": {
+    "kicker": "The Date",
+    "hijriPrefix": "Corresponding to",
+    "ceremonyAt": "The ceremony begins at {time}",
+    "arrivalNote": "Kindly arrive {minutes} minutes before the ceremony"
+  },
+  "venue": {
+    "kicker": "The Venue",
+    "description": "An open-air evening among the palms by the water, beneath the warm glow of evening lights.",
+    "directions": "Get Directions",
+    "appleMaps": "Open in Apple Maps",
+    "imageAlt": "Fairy Garden — palms, lake and fountain in the evening light"
+  },
+  "calendar": {
+    "kicker": "Save the date",
+    "title": "Add to Calendar",
+    "google": "Google Calendar",
+    "apple": "Apple Calendar",
+    "outlook": "Outlook",
+    "ics": "Download calendar file",
+    "eventTitle": "{couple} — Wedding",
+    "eventDescription": "With love, we invite you to celebrate the wedding of {couple}."
+  },
+  "music": {
+    "play": "Play Music",
+    "pause": "Pause Music"
+  },
+  "lang": {
+    "switchTo": "العربية",
+    "ariaLabel": "التبديل إلى العربية"
+  },
+  "closing": {
+    "message": "Our celebration would be complete with you there.",
+    "monogramAlt": "{couple} monogram"
+  },
+  "qr": {
+    "kicker": "Wedding Invitation",
+    "scan": "Scan to open the invitation",
+    "print": "Print",
+    "downloadPng": "Download PNG",
+    "downloadSvg": "Download SVG",
+    "light": "Light version",
+    "dark": "Dark version",
+    "backToInvitation": "Back to the invitation"
+  },
+  "enter": {
+    "title": "A private invitation",
+    "prompt": "Please enter your invitation code",
+    "placeholder": "Invitation code",
+    "submit": "Enter",
+    "error": "That code is not right — please try again"
+  },
+  "common": {
+    "monogramAlt": "{couple} monogram — interlocking letters A and T",
+    "and": "&"
+  }
+}
