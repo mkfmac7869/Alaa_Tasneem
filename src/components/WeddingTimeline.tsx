@@ -16,7 +16,7 @@ export default function WeddingTimeline() {
   const isArabic = locale === "ar";
 
   return (
-    <section className="texture-paper relative overflow-hidden bg-ivory px-6 py-24 sm:py-32">
+    <section className="texture-paper relative overflow-hidden bg-ivory px-6 py-14 sm:py-16">
       <SectionFlora variant="both" opacity="opacity-60" />
 
       <div className="relative mx-auto max-w-2xl">
@@ -26,7 +26,7 @@ export default function WeddingTimeline() {
         </Reveal>
 
         {/* the programme card */}
-        <div className="relative mt-12 border border-ink/15 bg-ivory/80 px-4 py-12 sm:px-10">
+        <div className="relative mt-8 border border-ink/15 bg-ivory/80 px-4 py-10 sm:px-10">
           <div
             className="pointer-events-none absolute inset-1.5 border border-ink/10"
             aria-hidden

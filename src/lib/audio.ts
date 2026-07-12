@@ -65,7 +65,7 @@ function ensureElement(): HTMLAudioElement | null {
     if (snapshot.playing && !document.hidden) emit({ playing: false });
   });
   el.addEventListener("play", () => {
-    if (!snapshot.playing) emit({ playing: true });
+    if (!snapshot.playing && snapshot.available) emit({ playing: true });
   });
 
   // Be a considerate guest: silence when the page is hidden
@@ -101,7 +101,8 @@ function fadeTo(target: number, ms: number, pauseAtZero: boolean) {
   const step = (now: number) => {
     if (!el) return;
     const progress = Math.min(1, (now - startedAt) / ms);
-    el.volume = from + (target - from) * progress;
+    // Clamp: floating-point drift must never leave [0, 1]
+    el.volume = Math.min(1, Math.max(0, from + (target - from) * progress));
     if (progress < 1) {
       fadeRaf = requestAnimationFrame(step);
     } else {

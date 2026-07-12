@@ -18,11 +18,11 @@ export default function EventDetails() {
   );
 
   return (
-    <section className="texture-paper relative overflow-hidden bg-ivory px-6 py-24 text-center sm:py-32">
+    <section className="texture-paper relative overflow-hidden bg-ivory px-6 py-14 text-center sm:py-16">
       <SectionFlora variant="start" opacity="opacity-65" />
       <Reveal className="relative mx-auto max-w-2xl">
         <p className="kicker">{t("kicker")}</p>
-        <p className="lining-nums mt-8 font-display text-3xl leading-snug text-ink sm:text-4xl">
+        <p className="lining-nums mt-6 font-display text-3xl leading-snug text-ink sm:text-4xl">
           {formatGregorianDate(locale)}
         </p>
         {weddingConfig.showHijriDate && (
@@ -30,7 +30,7 @@ export default function EventDetails() {
             {t("hijriPrefix")} {formatHijriDate(locale)}
           </p>
         )}
-        <div className="my-9 flex items-center justify-center gap-5" aria-hidden>
+        <div className="my-7 flex items-center justify-center gap-5" aria-hidden>
           <span className="hairline-h w-14" />
           <Logo className="h-6 w-auto text-sage" />
           <span className="hairline-h w-14" />

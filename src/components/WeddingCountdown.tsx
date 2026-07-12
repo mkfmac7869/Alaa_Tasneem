@@ -40,7 +40,7 @@ export default function WeddingCountdown() {
   const isArabic = locale === "ar";
 
   return (
-    <section className="relative overflow-hidden bg-cream/60 px-6 py-24 sm:py-28">
+    <section className="relative overflow-hidden bg-cream/60 px-6 py-14 sm:py-16">
       <Image
         src="/images/floral-bouquet.webp"
         alt=""
@@ -69,7 +69,7 @@ export default function WeddingCountdown() {
             </p>
           </div>
         ) : (
-          <div className="relative mt-10 border border-ink/15 bg-ivory/80 px-2 py-9 sm:px-8">
+          <div className="relative mt-7 border border-ink/15 bg-ivory/80 px-2 py-8 sm:px-8">
             <div
               className="pointer-events-none absolute inset-1.5 border border-ink/10"
               aria-hidden

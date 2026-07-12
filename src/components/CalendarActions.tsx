@@ -32,14 +32,14 @@ export default function CalendarActions() {
   const icsHref = `/api/calendar/${locale}`;
 
   return (
-    <section className="texture-paper relative overflow-hidden bg-cream/70 px-6 py-24 text-center sm:py-28">
+    <section className="texture-paper relative overflow-hidden bg-cream/70 px-6 py-14 text-center sm:py-16">
       <SectionFlora variant="start" opacity="opacity-55" />
       <Reveal className="relative mx-auto max-w-xl">
         <p className="kicker">{t("kicker")}</p>
-        <h2 className="mt-6 font-display text-2xl text-ink sm:text-3xl">
+        <h2 className="mt-5 font-display text-2xl text-ink sm:text-3xl">
           {t("title")}
         </h2>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
           <CalendarChip href={googleCalendarUrl(locale)} external>
             {t("google")}
           </CalendarChip>

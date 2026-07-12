@@ -18,17 +18,17 @@ export default function VenueSection() {
   const city = locale === "ar" ? venue.cityAr : venue.cityEn;
 
   return (
-    <section className="relative overflow-hidden bg-cream/60 px-6 py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-cream/60 px-6 py-14 sm:py-16">
       <SectionFlora variant="end" opacity="opacity-55" />
       <Reveal className="relative mx-auto max-w-2xl text-center">
         <p className="kicker">{t("kicker")}</p>
-        <h2 className="mt-6 font-display text-3xl leading-snug text-ink sm:text-4xl">
+        <h2 className="mt-5 font-display text-3xl leading-snug text-ink sm:text-4xl">
           {name}
         </h2>
         <p className="mt-3 text-sm text-ink-soft">{city}</p>
 
         {/* the venue, painted */}
-        <div className="mt-10 border border-ink/15 bg-ivory p-2 sm:p-3">
+        <div className="mt-8 border border-ink/15 bg-ivory p-2 sm:p-3">
           <Image
             src="/images/venue-illustration.webp"
             alt={t("imageAlt")}
@@ -47,7 +47,7 @@ export default function VenueSection() {
           {t("description")}
         </p>
 
-        <div className="mt-10 flex flex-col items-center gap-5">
+        <div className="mt-8 flex flex-col items-center gap-4">
           <MapButton
             href={googleMapsHref()}
             label={t("directions")}

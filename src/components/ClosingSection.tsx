@@ -11,7 +11,7 @@ export default function ClosingSection() {
   const couple = coupleNames(locale);
 
   return (
-    <section className="texture-paper relative overflow-hidden bg-ivory px-6 py-32 text-center sm:py-40">
+    <section className="texture-paper relative overflow-hidden bg-ivory px-6 py-20 text-center sm:py-24">
       <Image
         src="/images/floral-bouquet.webp"
         alt=""
