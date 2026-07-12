@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import WeddingMonogram from "@/components/WeddingMonogram";
+import Logo from "@/components/Logo";
 import { weddingConfig } from "@/config/wedding";
 
 /** Elegant one-field gate, only reachable when an invite code is set. */
@@ -40,8 +40,8 @@ export default async function EnterPage({
 
   return (
     <main className="texture-paper flex min-h-svh flex-col items-center justify-center bg-ivory px-6 text-center">
-      <WeddingMonogram
-        className="w-20 text-olive-deep"
+      <Logo
+        className="h-24 w-auto text-sage-deep"
         title={weddingConfig.initials.en}
       />
       <h1 className="mt-8 font-display text-2xl text-ink">{t("title")}</h1>

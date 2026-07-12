@@ -1,4 +1,4 @@
-import WeddingMonogram from "./WeddingMonogram";
+import Logo from "./Logo";
 
 export default function SectionDivider({ className }: { className?: string }) {
   return (
@@ -7,11 +7,7 @@ export default function SectionDivider({ className }: { className?: string }) {
       aria-hidden
     >
       <span className="hairline-h w-16" />
-      <WeddingMonogram
-        variant="mark"
-        className="w-6 text-taupe"
-        strokeWidth={2.6}
-      />
+      <Logo className="h-7 w-auto text-sage" />
       <span className="hairline-h w-16" />
     </div>
   );

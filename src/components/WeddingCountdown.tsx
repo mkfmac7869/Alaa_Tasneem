@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import Reveal from "./Reveal";
-import WeddingMonogram from "./WeddingMonogram";
+import Logo from "./Logo";
 import { formatCountdownNumber, weddingDate } from "@/lib/dates";
 
 type Unit = "days" | "hours" | "minutes" | "seconds";
@@ -39,42 +40,65 @@ export default function WeddingCountdown() {
   const isArabic = locale === "ar";
 
   return (
-    <section className="bg-cream/60 px-6 py-24 sm:py-32">
-      <Reveal className="mx-auto max-w-3xl text-center">
+    <section className="relative overflow-hidden bg-cream/60 px-6 py-24 sm:py-28">
+      <Image
+        src="/images/floral-bouquet.webp"
+        alt=""
+        width={720}
+        height={760}
+        aria-hidden
+        className="pointer-events-none absolute -end-14 -top-12 w-[42vw] max-w-[280px] -scale-x-100 opacity-60"
+      />
+      <Image
+        src="/images/floral-bouquet.webp"
+        alt=""
+        width={720}
+        height={760}
+        aria-hidden
+        className="pointer-events-none absolute -bottom-12 -start-14 w-[42vw] max-w-[280px] -scale-y-100 opacity-60"
+      />
+
+      <Reveal className="relative mx-auto max-w-2xl text-center">
         <p className="kicker">{t("kicker")}</p>
 
         {arrived ? (
           <div className="mt-12 flex flex-col items-center gap-8">
-            <WeddingMonogram className="w-20 text-olive-deep" />
+            <Logo className="h-24 w-auto text-sage-deep" />
             <p className="text-balance font-display text-3xl leading-relaxed text-ink sm:text-4xl">
               {t("arrived")}
             </p>
           </div>
         ) : (
-          <div
-            className="mt-12 flex items-stretch justify-center"
-            role="timer"
-            aria-label={t("ariaLabel")}
-          >
-            {UNITS.map((unit, index) => (
-              <div key={unit} className="flex items-stretch">
-                {index > 0 && <span className="hairline-v" aria-hidden />}
-                <div className="flex w-[4.6rem] flex-col items-center justify-center px-1 py-2 sm:w-28">
-                  <span className="font-display text-[clamp(2rem,7.5vw,3.5rem)] leading-none text-ink">
-                    {now === null
-                      ? "--"
-                      : formatCountdownNumber(locale, values[unit])}
-                  </span>
-                  <span
-                    className={`mt-3 text-[11px] text-ink-soft ${
-                      isArabic ? "text-[13px]" : "uppercase tracking-[0.22em]"
-                    }`}
-                  >
-                    {t(unit)}
-                  </span>
+          <div className="relative mt-10 border border-ink/15 bg-ivory/80 px-2 py-9 sm:px-8">
+            <div
+              className="pointer-events-none absolute inset-1.5 border border-ink/10"
+              aria-hidden
+            />
+            <div
+              className="relative flex items-stretch justify-center"
+              role="timer"
+              aria-label={t("ariaLabel")}
+            >
+              {UNITS.map((unit, index) => (
+                <div key={unit} className="flex items-stretch">
+                  {index > 0 && <span className="hairline-v" aria-hidden />}
+                  <div className="flex w-[4.4rem] flex-col items-center justify-center px-1 py-2 sm:w-28">
+                    <span className="lining-nums font-display text-[clamp(2rem,7.5vw,3.4rem)] leading-none text-ink">
+                      {now === null
+                        ? "--"
+                        : formatCountdownNumber(locale, values[unit])}
+                    </span>
+                    <span
+                      className={`mt-3 text-[11px] text-ink-soft ${
+                        isArabic ? "text-[13px]" : "uppercase tracking-[0.22em]"
+                      }`}
+                    >
+                      {t(unit)}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </Reveal>

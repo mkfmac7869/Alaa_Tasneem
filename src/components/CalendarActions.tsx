@@ -1,5 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 import Reveal from "./Reveal";
+import SectionFlora from "./SectionFlora";
 import { googleCalendarUrl, outlookCalendarUrl } from "@/lib/calendar";
 
 function CalendarChip({
@@ -31,8 +32,9 @@ export default function CalendarActions() {
   const icsHref = `/api/calendar/${locale}`;
 
   return (
-    <section className="texture-paper bg-cream/70 px-6 py-24 text-center sm:py-28">
-      <Reveal className="mx-auto max-w-xl">
+    <section className="texture-paper relative overflow-hidden bg-cream/70 px-6 py-24 text-center sm:py-28">
+      <SectionFlora variant="start" opacity="opacity-55" />
+      <Reveal className="relative mx-auto max-w-xl">
         <p className="kicker">{t("kicker")}</p>
         <h2 className="mt-6 font-display text-2xl text-ink sm:text-3xl">
           {t("title")}

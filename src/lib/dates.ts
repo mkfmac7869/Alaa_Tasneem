@@ -12,9 +12,9 @@ export function weddingDate(): Date {
   return new Date(weddingStartISO());
 }
 
-/** BCP-47 tag per locale; Arabic uses Arabic-Indic numerals. */
+/** BCP-47 tag per locale; Arabic text with Latin (Western) digits. */
 function dateLocaleTag(locale: Locale): string {
-  return locale === "ar" ? "ar-EG-u-nu-arab" : "en-GB";
+  return locale === "ar" ? "ar-EG-u-nu-latn" : "en-GB";
 }
 
 export function formatGregorianDate(locale: Locale): string {
@@ -30,7 +30,7 @@ export function formatGregorianDate(locale: Locale): string {
 export function formatHijriDate(locale: Locale): string {
   const tag =
     locale === "ar"
-      ? "ar-SA-u-ca-islamic-umalqura-nu-arab"
+      ? "ar-SA-u-ca-islamic-umalqura-nu-latn"
       : "en-u-ca-islamic-umalqura";
   return new Intl.DateTimeFormat(tag, {
     day: "numeric",
@@ -61,9 +61,20 @@ export function formatShortDate(locale: Locale): string {
   return `${get("day")} · ${get("month")} · ${get("year")}`;
 }
 
-/** Formats a countdown number in the locale's numeral system. */
-export function formatCountdownNumber(locale: Locale, value: number): string {
-  return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en", {
+/** Formats a wall-clock time like "17:30" for the timeline. */
+export function formatWallClock(locale: Locale, time: string): string {
+  const { date, utcOffset } = weddingConfig;
+  return new Intl.DateTimeFormat(dateLocaleTag(locale), {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: weddingConfig.timezone,
+  }).format(new Date(`${date}T${time}:00${utcOffset}`));
+}
+
+/** Formats a countdown number — Western digits in both languages. */
+export function formatCountdownNumber(_locale: Locale, value: number): string {
+  return new Intl.NumberFormat("en", {
     minimumIntegerDigits: 2,
     useGrouping: false,
   }).format(value);

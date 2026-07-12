@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
-  Amiri,
+  Almarai,
   Cormorant_Garamond,
-  IBM_Plex_Sans_Arabic,
+  El_Messiri,
   Manrope,
 } from "next/font/google";
 import { routing } from "@/i18n/routing";
@@ -17,17 +17,17 @@ import "../globals.css";
  * is preloaded because Arabic is the default (and primary) locale;
  * the Latin pair loads on demand via CSS when needed.
  */
-const amiri = Amiri({
+const elMessiri = El_Messiri({
   subsets: ["arabic", "latin"],
-  weight: ["400"],
-  variable: "--font-amiri",
+  weight: ["400", "500", "600"],
+  variable: "--font-el-messiri",
   display: "swap",
 });
 
-const plexArabic = IBM_Plex_Sans_Arabic({
-  subsets: ["arabic", "latin"],
-  weight: ["400"],
-  variable: "--font-plex-arabic",
+const almarai = Almarai({
+  subsets: ["arabic"],
+  weight: ["300", "400", "700"],
+  variable: "--font-almarai",
   display: "swap",
 });
 
@@ -119,7 +119,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={dir}
-      className={`${amiri.variable} ${plexArabic.variable} ${cormorant.variable} ${manrope.variable}`}
+      className={`${elMessiri.variable} ${almarai.variable} ${cormorant.variable} ${manrope.variable}`}
     >
       <body>
         <noscript>

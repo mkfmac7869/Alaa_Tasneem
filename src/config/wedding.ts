@@ -27,10 +27,10 @@ export const weddingConfig = {
    * displayed dates, Hijri conversion, calendar links and the ICS
    * file all derive from these four values.
    */
-  date: "2026-08-25",
-  /** Ceremony start — [INSERT TIME], 24h format */
-  startTime: "19:00",
-  endTime: "23:30",
+  date: "2026-08-20",
+  /** Welcome — the evening's first moment, 24h format */
+  startTime: "17:00",
+  endTime: "23:00",
   /** Egypt observes DST: +03:00 in August (winter is +02:00) */
   utcOffset: "+03:00",
   timezone: "Africa/Cairo",
@@ -40,6 +40,20 @@ export const weddingConfig = {
 
   /** Guests are asked to arrive this many minutes early */
   arrivalNoteMinutes: 30,
+
+  /**
+   * The programme of the evening — venue wall-clock times (24h).
+   * Labels for each key live in messages/{ar,en}.json → timeline.
+   */
+  timeline: [
+    { key: "welcome", time: "17:00" },
+    { key: "katbKtab", time: "17:30" },
+    { key: "maghreb", time: "18:30" },
+    { key: "entrance", time: "19:30" },
+    { key: "cake", time: "20:00" },
+    { key: "buffet", time: "21:00" },
+    { key: "end", time: "23:00" },
+  ],
 
   venue: {
     nameEn: "Fairy Garden",

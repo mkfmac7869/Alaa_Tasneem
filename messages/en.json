@@ -35,6 +35,16 @@
     "ceremonyAt": "The ceremony begins at {time}",
     "arrivalNote": "Kindly arrive {minutes} minutes before the ceremony"
   },
+  "timeline": {
+    "kicker": "The Programme",
+    "welcome": "Welcome",
+    "katbKtab": "Katb Ktab Ceremony",
+    "maghreb": "Maghreb Prayer Break",
+    "entrance": "Bride & Groom Entrance",
+    "cake": "Cake Cutting",
+    "buffet": "Buffet",
+    "end": "End of Night"
+  },
   "venue": {
     "kicker": "The Venue",
     "description": "An open-air evening among the palms by the water, beneath the warm glow of evening lights.",

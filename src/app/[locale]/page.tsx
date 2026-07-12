@@ -6,6 +6,7 @@ import HeroSection from "@/components/HeroSection";
 import InvitationMessage from "@/components/InvitationMessage";
 import WeddingCountdown from "@/components/WeddingCountdown";
 import EventDetails from "@/components/EventDetails";
+import WeddingTimeline from "@/components/WeddingTimeline";
 import VenueSection from "@/components/VenueSection";
 import CalendarActions from "@/components/CalendarActions";
 import ClosingSection from "@/components/ClosingSection";
@@ -55,12 +56,13 @@ export default async function InvitationPage({
         <InvitationMessage />
         <WeddingCountdown />
         <EventDetails />
+        <WeddingTimeline />
         <VenueSection />
         <CalendarActions />
         <ClosingSection />
       </main>
-      <footer className="bg-night px-6 py-8 text-center">
-        <p className="text-[11px] uppercase tracking-[0.35em] text-ivory/60">
+      <footer className="bg-olive-deep px-6 py-8 text-center">
+        <p className="text-[11px] uppercase tracking-[0.35em] text-ivory/75">
           {weddingConfig.initials.en}
         </p>
       </footer>

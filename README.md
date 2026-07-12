@@ -45,18 +45,19 @@ numerals are all derived automatically per language.
 2. Paste the Google Maps **share link** into `googleMapsUrl`
    (and optionally set `latitude`/`longitude` — they power the
    Apple Maps link and are a fallback for Google Maps).
-3. Replace the venue photography with the real photos:
+3. The site uses an illustrated art direction — the venue appears
+   as a watercolor painting at `public/images/venue-illustration.webp`.
+   To swap any artwork (venue painting, corner bouquets, sprigs):
 
 ```bash
 # converts any JPG/PNG to an optimized WebP at the right size
-node scripts/optimize-images.mjs photo.jpg public/images/venue-photo-courtyard.webp 2200
-node scripts/optimize-images.mjs photo.jpg public/images/venue-hero-dusk-wide.webp 2752   # desktop hero
-node scripts/optimize-images.mjs photo.jpg public/images/venue-hero-dusk-tall.webp 1536   # mobile hero (vertical crop)
+node scripts/optimize-images.mjs art.png public/images/venue-illustration.webp 1600
 ```
 
-The hero is art-directed: phones load the tall crop, larger screens
-the wide one — keep the mobile crop vertical (≈9:16) with calm sky
-in the upper third so the names stay readable.
+If you replace `floral-bouquet.webp` / the `sprig-*.webp` files, use
+images with a transparent background (PNG/WebP with alpha), and give
+the file a **new name** (update the references in `src/components/`)
+so guests' browsers never show a cached older version.
 
 ## How to replace the music
 

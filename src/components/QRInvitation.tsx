@@ -2,8 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import QRCode from "qrcode";
-import WeddingMonogram from "./WeddingMonogram";
+import Logo from "./Logo";
 import { coupleNames, isPlaceholder, weddingConfig } from "@/config/wedding";
 import { formatGregorianDate } from "@/lib/dates";
 import arMessages from "../../messages/ar.json";
@@ -80,18 +81,40 @@ export default function QRInvitation() {
         }`}
       >
         <div
-          className={`border px-8 pb-10 pt-12 text-center ${
+          className={`relative overflow-hidden border px-8 pb-10 pt-12 text-center ${
             dark ? "border-ivory/25" : "border-ink/20"
           }`}
         >
-          <WeddingMonogram
-            className={`mx-auto w-16 ${dark ? "text-ivory" : "text-olive-deep"}`}
+          <Image
+            src="/images/floral-bouquet.webp"
+            alt=""
+            width={240}
+            height={240}
+            aria-hidden
+            className={`pointer-events-none absolute -start-4 -top-4 w-24 ${
+              dark ? "opacity-60" : ""
+            }`}
+          />
+          <Image
+            src="/images/floral-bouquet.webp"
+            alt=""
+            width={240}
+            height={240}
+            aria-hidden
+            className={`pointer-events-none absolute -bottom-4 -end-4 w-24 rotate-180 ${
+              dark ? "opacity-60" : ""
+            }`}
+          />
+          <Logo
+            className={`mx-auto h-20 w-auto ${
+              dark ? "text-ivory" : "text-sage-deep"
+            }`}
             title={coupleNames("en")}
           />
 
           <p
             className="mt-8 text-3xl"
-            style={{ fontFamily: "var(--font-amiri)" }}
+            style={{ fontFamily: "var(--font-el-messiri)" }}
             lang="ar"
             dir="rtl"
           >
@@ -136,11 +159,7 @@ export default function QRInvitation() {
             )}
             {svgMarkup && (
               <span className="absolute left-1/2 top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white">
-                <WeddingMonogram
-                  variant="mark"
-                  className="h-8 w-8 text-charcoal"
-                  strokeWidth={3}
-                />
+                <Logo className="h-8 w-auto text-charcoal" />
               </span>
             )}
           </div>
