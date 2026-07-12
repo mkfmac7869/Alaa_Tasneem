@@ -18,7 +18,7 @@ export default function ClosingSection() {
         width={720}
         height={720}
         aria-hidden
-        className="pointer-events-none absolute -left-12 -bottom-14 w-[52vw] max-w-[380px] -scale-y-100"
+        className="pointer-events-none absolute -left-12 bottom-0 w-[52vw] max-w-[380px] -scale-y-100"
       />
       <Image
         src="/images/floral-bouquet.webp"
@@ -26,7 +26,7 @@ export default function ClosingSection() {
         width={720}
         height={720}
         aria-hidden
-        className="pointer-events-none absolute -right-14 -top-12 w-[44vw] max-w-[320px] -scale-x-100 opacity-85"
+        className="pointer-events-none absolute -right-14 top-0 w-[44vw] max-w-[320px] -scale-x-100 opacity-85"
       />
 
       <div className="relative z-10 mx-auto max-w-xl">

@@ -85,7 +85,7 @@ export default function HeroSection({ dateLine }: { dateLine: string }) {
         width={720}
         height={760}
         aria-hidden
-        className="pointer-events-none absolute -bottom-12 -left-12 w-[34vw] max-w-[340px] -scale-y-100 opacity-95"
+        className="pointer-events-none absolute -left-12 bottom-0 w-[34vw] max-w-[340px] -scale-y-100 opacity-95"
       />
       <Image
         src="/images/floral-bouquet.webp"
@@ -93,7 +93,7 @@ export default function HeroSection({ dateLine }: { dateLine: string }) {
         width={720}
         height={760}
         aria-hidden
-        className="pointer-events-none absolute -bottom-10 -right-10 w-[38vw] max-w-[400px] rotate-180"
+        className="pointer-events-none absolute -right-10 bottom-0 w-[38vw] max-w-[400px] rotate-180"
       />
 
       <FloatingSprig

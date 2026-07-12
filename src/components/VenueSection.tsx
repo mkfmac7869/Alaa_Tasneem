@@ -30,9 +30,9 @@ export default function VenueSection() {
         {/* the venue, painted */}
         <div className="mt-8 border border-ink/15 bg-ivory p-2 sm:p-3">
           <Image
-            src="/images/venue-illustration.webp"
+            src="/images/venue-painting.webp"
             alt={t("imageAlt")}
-            width={1376}
+            width={790}
             height={768}
             sizes="(min-width: 768px) 672px, 100vw"
             className="h-auto w-full"

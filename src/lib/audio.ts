@@ -8,7 +8,7 @@ import { safeSessionGet, safeSessionSet } from "./storage";
 export type AudioSnapshot = { playing: boolean; available: boolean };
 
 const PREF_KEY = "at-music";
-const TARGET_VOLUME = 0.5;
+const TARGET_VOLUME = 0.25;
 
 let el: HTMLAudioElement | null = null;
 let snapshot: AudioSnapshot = { playing: false, available: true };

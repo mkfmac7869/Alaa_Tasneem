@@ -23,7 +23,7 @@ export default function SectionFlora({
           alt=""
           width={720}
           height={760}
-          className={`absolute -left-14 -top-12 w-[44vw] max-w-[300px] ${opacity}`}
+          className={`absolute -left-14 top-0 w-[44vw] max-w-[300px] ${opacity}`}
         />
       )}
       {(variant === "end" || variant === "both") && (
@@ -32,7 +32,7 @@ export default function SectionFlora({
           alt=""
           width={720}
           height={760}
-          className={`absolute -bottom-12 -right-14 w-[44vw] max-w-[300px] rotate-180 ${opacity}`}
+          className={`absolute -right-14 bottom-0 w-[44vw] max-w-[300px] rotate-180 ${opacity}`}
         />
       )}
       <FloatingSprig
