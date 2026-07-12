@@ -134,9 +134,7 @@ export default async function LocaleLayout({
         <noscript>
           {/* Without JS: no envelope, and all content fully visible */}
           <style>{`[data-intro-overlay]{display:none !important}
-.reveal,.hero-item{opacity:1 !important;transform:none !important;filter:none !important}
-.draw-path{stroke-dashoffset:0 !important;opacity:1 !important}
-.draw-leaf{opacity:.85 !important}`}</style>
+.reveal,.hero-item{opacity:1 !important;transform:none !important;filter:none !important}`}</style>
         </noscript>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>

@@ -9,7 +9,7 @@ export default function InvitationMessage() {
   const locale = useLocale() as "ar" | "en";
 
   return (
-    <section className="texture-paper relative overflow-hidden bg-ivory px-6 py-14 sm:py-16">
+    <section className="texture-paper relative overflow-hidden bg-linen px-6 py-14 sm:py-16">
       <SectionFlora variant="end" opacity="opacity-65" />
       <div className="relative mx-auto max-w-2xl text-center">
         <Reveal>

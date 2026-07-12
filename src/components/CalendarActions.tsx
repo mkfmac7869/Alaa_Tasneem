@@ -32,7 +32,7 @@ export default function CalendarActions() {
   const icsHref = `/api/calendar/${locale}`;
 
   return (
-    <section className="texture-paper relative overflow-hidden bg-cream/70 px-6 py-14 text-center sm:py-16">
+    <section className="texture-paper relative overflow-hidden bg-linen px-6 py-14 text-center sm:py-16">
       <SectionFlora variant="start" opacity="opacity-55" />
       <Reveal className="relative mx-auto max-w-xl">
         <p className="kicker">{t("kicker")}</p>

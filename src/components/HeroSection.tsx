@@ -51,6 +51,7 @@ export default function HeroSection({ dateLine }: { dateLine: string }) {
         }}
         aria-hidden
       />
+
       <div
         className="pointer-events-none absolute inset-3 border border-ink/15 sm:inset-5"
         aria-hidden

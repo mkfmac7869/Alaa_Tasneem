@@ -18,7 +18,7 @@ export default function VenueSection() {
   const city = locale === "ar" ? venue.cityAr : venue.cityEn;
 
   return (
-    <section className="relative overflow-hidden bg-cream/60 px-6 py-14 sm:py-16">
+    <section className="relative overflow-hidden bg-beige px-6 py-14 sm:py-16">
       <SectionFlora variant="end" opacity="opacity-55" />
       <Reveal className="relative mx-auto max-w-2xl text-center">
         <p className="kicker">{t("kicker")}</p>

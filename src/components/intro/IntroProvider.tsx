@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import EnvelopeIntro from "./EnvelopeIntro";
+import GardenGateIntro from "./GardenGateIntro";
 import {
   safeSessionGet,
   safeSessionRemove,
@@ -101,7 +101,7 @@ export default function IntroProvider({ children }: { children: ReactNode }) {
     <IntroContext.Provider value={{ revealed, replayIntro }}>
       {children}
       {overlayMounted && (
-        <EnvelopeIntro onOpened={handleOpened} onFinished={handleFinished} />
+        <GardenGateIntro onOpened={handleOpened} onFinished={handleFinished} />
       )}
     </IntroContext.Provider>
   );
