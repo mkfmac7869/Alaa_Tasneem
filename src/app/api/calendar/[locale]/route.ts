@@ -1,5 +1,9 @@
 import { buildIcs } from "@/lib/calendar";
 
+// Exported as static files; firebase.json attaches the calendar
+// Content-Type and download headers.
+export const dynamic = "force-static";
+
 export function generateStaticParams() {
   return [{ locale: "ar" }, { locale: "en" }];
 }

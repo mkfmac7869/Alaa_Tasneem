@@ -7,7 +7,8 @@
     "loadingLabel": "دعوة زفاف {couple}",
     "open": "افتح الدعوة",
     "openAria": "افتح دعوة زفاف {couple}",
-    "skip": "تخطي"
+    "skip": "تخطي",
+    "replay": "إعادة فتح الدعوة"
   },
   "hero": {
     "kicker": "دعوة زفاف",

@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import IntroProvider from "@/components/intro/IntroProvider";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import MusicControl from "@/components/MusicControl";
+import ReplayIntroButton from "@/components/ReplayIntroButton";
 import HeroSection from "@/components/HeroSection";
 import InvitationMessage from "@/components/InvitationMessage";
 import WeddingCountdown from "@/components/WeddingCountdown";
@@ -51,6 +52,7 @@ export default async function InvitationPage({
     <IntroProvider>
       <LanguageSwitcher />
       <MusicControl />
+      <ReplayIntroButton />
       <main tabIndex={-1} className="outline-none">
         <HeroSection dateLine={formatGregorianDate(locale)} />
         <InvitationMessage />

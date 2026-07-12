@@ -1,0 +1,38 @@
+{
+  "hosting": {
+    "public": "out",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "cleanUrls": true,
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "/ar",
+        "type": 302
+      }
+    ],
+    "headers": [
+      {
+        "source": "/api/calendar/**",
+        "headers": [
+          { "key": "Content-Type", "value": "text/calendar; charset=utf-8" },
+          {
+            "key": "Content-Disposition",
+            "value": "attachment; filename=\"alaa-tasneem-wedding.ics\""
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(webp|png|jpg|svg|ico)",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      },
+      {
+        "source": "/_next/static/**",
+        "headers": [
+          { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        ]
+      }
+    ]
+  }
+}

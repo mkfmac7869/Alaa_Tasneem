@@ -7,7 +7,8 @@
     "loadingLabel": "{couple} wedding invitation",
     "open": "Open Invitation",
     "openAria": "Open the wedding invitation of {couple}",
-    "skip": "Skip"
+    "skip": "Skip",
+    "replay": "Replay the invitation"
   },
   "hero": {
     "kicker": "Wedding Invitation",

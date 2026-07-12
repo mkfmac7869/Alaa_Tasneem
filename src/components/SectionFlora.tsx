@@ -23,7 +23,7 @@ export default function SectionFlora({
           alt=""
           width={720}
           height={760}
-          className={`absolute -start-14 -top-12 w-[44vw] max-w-[300px] ${opacity}`}
+          className={`absolute -left-14 -top-12 w-[44vw] max-w-[300px] ${opacity}`}
         />
       )}
       {(variant === "end" || variant === "both") && (
@@ -32,18 +32,18 @@ export default function SectionFlora({
           alt=""
           width={720}
           height={760}
-          className={`absolute -bottom-12 -end-14 w-[44vw] max-w-[300px] rotate-180 ${opacity}`}
+          className={`absolute -bottom-12 -right-14 w-[44vw] max-w-[300px] rotate-180 ${opacity}`}
         />
       )}
       <FloatingSprig
         src="/images/sprig-eucalyptus.webp"
-        className="bottom-[18%] start-[6%] w-12 opacity-50"
+        className="bottom-[18%] left-[6%] w-12 opacity-50"
         duration={11}
         rotate={-6}
       />
       <FloatingSprig
         src="/images/sprig-blossom.webp"
-        className="end-[7%] top-[22%] w-11 opacity-50"
+        className="right-[7%] top-[22%] w-11 opacity-50"
         duration={13}
         delay={1.2}
         rotate={8}

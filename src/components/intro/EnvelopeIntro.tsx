@@ -167,7 +167,7 @@ export default function EnvelopeIntro({
         height={760}
         priority
         aria-hidden
-        className="pointer-events-none absolute -start-10 -top-10 w-[46vw] max-w-[380px]"
+        className="pointer-events-none absolute -left-10 -top-10 w-[46vw] max-w-[380px]"
       />
       <Image
         src="/images/floral-bouquet.webp"
@@ -176,7 +176,7 @@ export default function EnvelopeIntro({
         height={760}
         priority
         aria-hidden
-        className="pointer-events-none absolute -end-12 -top-12 w-[38vw] max-w-[300px] -scale-x-100 opacity-85"
+        className="pointer-events-none absolute -right-12 -top-12 w-[38vw] max-w-[300px] -scale-x-100 opacity-85"
       />
       <Image
         src="/images/floral-bouquet.webp"
@@ -184,7 +184,7 @@ export default function EnvelopeIntro({
         width={720}
         height={760}
         aria-hidden
-        className="pointer-events-none absolute -bottom-12 -start-12 w-[40vw] max-w-[320px] -scale-y-100 opacity-85"
+        className="pointer-events-none absolute -bottom-12 -left-12 w-[40vw] max-w-[320px] -scale-y-100 opacity-85"
       />
       <Image
         src="/images/floral-bouquet.webp"
@@ -192,17 +192,17 @@ export default function EnvelopeIntro({
         width={720}
         height={760}
         aria-hidden
-        className="pointer-events-none absolute -bottom-10 -end-10 w-[46vw] max-w-[380px] rotate-180"
+        className="pointer-events-none absolute -bottom-10 -right-10 w-[46vw] max-w-[380px] rotate-180"
       />
       <FloatingSprig
         src="/images/sprig-eucalyptus.webp"
-        className="start-[12%] top-[38%] w-12 opacity-60 sm:start-[18%]"
+        className="left-[12%] top-[38%] w-12 opacity-60 sm:left-[18%]"
         duration={11}
         rotate={-7}
       />
       <FloatingSprig
         src="/images/sprig-blossom.webp"
-        className="end-[12%] top-[58%] w-11 opacity-60 sm:end-[19%]"
+        className="right-[12%] top-[58%] w-11 opacity-60 sm:right-[19%]"
         duration={13}
         delay={1.2}
         rotate={8}
@@ -264,7 +264,7 @@ export default function EnvelopeIntro({
                 width={240}
                 height={253}
                 aria-hidden
-                className="pointer-events-none absolute -start-4 -top-4 w-24 sm:w-28"
+                className="pointer-events-none absolute -left-4 -top-4 w-24 sm:w-28"
               />
               <Image
                 src="/images/floral-bouquet.webp"
@@ -272,7 +272,7 @@ export default function EnvelopeIntro({
                 width={240}
                 height={253}
                 aria-hidden
-                className="pointer-events-none absolute -bottom-4 -end-4 w-24 rotate-180 sm:w-28"
+                className="pointer-events-none absolute -bottom-4 -right-4 w-24 rotate-180 sm:w-28"
               />
               <Logo className="h-16 w-auto text-sage-deep sm:h-20" />
               <p className="font-display text-2xl text-ink sm:text-3xl">

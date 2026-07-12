@@ -69,11 +69,10 @@ export const weddingConfig = {
   },
 
   /**
-   * The final deployed URL — used for the QR code, canonical URL
-   * and social sharing. While it is a placeholder, the QR code
-   * falls back to the address the site is actually served from.
+   * The deployed URL — used for the QR code, canonical URL and
+   * social sharing previews.
    */
-  websiteUrl: "[INSERT FINAL WEBSITE URL]",
+  websiteUrl: "https://alaa-tasneem.web.app",
 
   /** Drop the licensed track at public/audio/wedding-theme.mp3 */
   musicUrl: "/audio/wedding-theme.mp3",
@@ -82,8 +81,8 @@ export const weddingConfig = {
     /** Keep true until launch to ask search engines not to index */
     noindex: true,
     /**
-     * Set a code (e.g. "2026") to require guests to enter it once
-     * before seeing the invitation. null disables the gate.
+     * Invitation-code gate. Requires a server platform (e.g.
+     * Vercel); it is not available on static Firebase Hosting.
      */
     inviteCode: null as string | null,
   },

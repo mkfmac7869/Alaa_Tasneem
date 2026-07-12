@@ -9,7 +9,12 @@ import {
   type ReactNode,
 } from "react";
 import EnvelopeIntro from "./EnvelopeIntro";
-import { safeSessionGet, safeSessionSet } from "@/lib/storage";
+import {
+  safeSessionGet,
+  safeSessionRemove,
+  safeSessionSet,
+} from "@/lib/storage";
+import { musicPreference, startMusic } from "@/lib/audio";
 
 /**
  * Survives soft navigations (language switch) so the envelope
@@ -17,7 +22,10 @@ import { safeSessionGet, safeSessionSet } from "@/lib/storage";
  */
 const introMemory = { opened: false };
 
-const IntroContext = createContext<{ revealed: boolean }>({ revealed: false });
+const IntroContext = createContext<{
+  revealed: boolean;
+  replayIntro: () => void;
+}>({ revealed: false, replayIntro: () => {} });
 
 export function useIntro() {
   return useContext(IntroContext);
@@ -35,6 +43,26 @@ export default function IntroProvider({ children }: { children: ReactNode }) {
       setOverlayMounted(false);
       setRevealed(true);
     }
+  }, []);
+
+  // If the envelope was skipped this session, the guest never made
+  // the gesture that starts the music — start it (softly) on their
+  // very first interaction instead.
+  useEffect(() => {
+    if (!introMemory.opened) return;
+    if (musicPreference() === "off") return;
+
+    const kick = () => {
+      void startMusic(1200);
+      window.removeEventListener("pointerdown", kick);
+      window.removeEventListener("keydown", kick);
+    };
+    window.addEventListener("pointerdown", kick);
+    window.addEventListener("keydown", kick);
+    return () => {
+      window.removeEventListener("pointerdown", kick);
+      window.removeEventListener("keydown", kick);
+    };
   }, []);
 
   useEffect(() => {
@@ -60,8 +88,17 @@ export default function IntroProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  /** Replay the envelope opening from the very beginning. */
+  const replayIntro = () => {
+    introMemory.opened = false;
+    safeSessionRemove("at-intro");
+    window.scrollTo({ top: 0, behavior: "auto" });
+    setRevealed(false);
+    setOverlayMounted(true);
+  };
+
   return (
-    <IntroContext.Provider value={{ revealed }}>
+    <IntroContext.Provider value={{ revealed, replayIntro }}>
       {children}
       {overlayMounted && (
         <EnvelopeIntro onOpened={handleOpened} onFinished={handleFinished} />

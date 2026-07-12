@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { weddingConfig } from "@/config/wedding";
 
+export const dynamic = "force-static";
+
 export default function robots(): MetadataRoute.Robots {
   if (weddingConfig.privacy.noindex) {
     return { rules: { userAgent: "*", disallow: "/" } };

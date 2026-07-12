@@ -91,7 +91,7 @@ export default function QRInvitation() {
             width={240}
             height={240}
             aria-hidden
-            className={`pointer-events-none absolute -start-4 -top-4 w-24 ${
+            className={`pointer-events-none absolute -left-4 -top-4 w-24 ${
               dark ? "opacity-60" : ""
             }`}
           />
@@ -101,7 +101,7 @@ export default function QRInvitation() {
             width={240}
             height={240}
             aria-hidden
-            className={`pointer-events-none absolute -bottom-4 -end-4 w-24 rotate-180 ${
+            className={`pointer-events-none absolute -bottom-4 -right-4 w-24 rotate-180 ${
               dark ? "opacity-60" : ""
             }`}
           />

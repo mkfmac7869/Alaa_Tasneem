@@ -3,10 +3,10 @@ import { defineRouting } from "next-intl/routing";
 export const routing = defineRouting({
   locales: ["ar", "en"],
   defaultLocale: "ar",
-  // Arabic is served at "/", English at "/en"
-  localePrefix: "as-needed",
-  // Arabic must load first for every guest, regardless of
-  // browser language — switching to English is always one tap.
+  // Static hosting: every page lives under its locale prefix and
+  // "/" is redirected to /ar by firebase.json. Arabic loads first
+  // for every guest regardless of browser language.
+  localePrefix: "always",
   localeDetection: false,
 });
 

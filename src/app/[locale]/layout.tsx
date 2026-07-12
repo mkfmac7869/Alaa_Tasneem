@@ -92,7 +92,7 @@ export async function generateMetadata({
     robots: weddingConfig.privacy.noindex
       ? { index: false, follow: false }
       : undefined,
-    alternates: base ? { languages: { ar: "/", en: "/en" } } : undefined,
+    alternates: base ? { languages: { ar: "/ar", en: "/en" } } : undefined,
   };
 }
 

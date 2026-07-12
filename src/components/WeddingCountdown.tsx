@@ -47,7 +47,7 @@ export default function WeddingCountdown() {
         width={720}
         height={760}
         aria-hidden
-        className="pointer-events-none absolute -end-14 -top-12 w-[42vw] max-w-[280px] -scale-x-100 opacity-60"
+        className="pointer-events-none absolute -right-14 -top-12 w-[42vw] max-w-[280px] -scale-x-100 opacity-60"
       />
       <Image
         src="/images/floral-bouquet.webp"
@@ -55,7 +55,7 @@ export default function WeddingCountdown() {
         width={720}
         height={760}
         aria-hidden
-        className="pointer-events-none absolute -bottom-12 -start-14 w-[42vw] max-w-[280px] -scale-y-100 opacity-60"
+        className="pointer-events-none absolute -bottom-12 -left-14 w-[42vw] max-w-[280px] -scale-y-100 opacity-60"
       />
 
       <Reveal className="relative mx-auto max-w-2xl text-center">

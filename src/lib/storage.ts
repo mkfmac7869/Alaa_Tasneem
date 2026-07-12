@@ -19,3 +19,11 @@ export function safeSessionSet(key: string, value: string): void {
     // Storage unavailable — the guest simply replays the intro next time
   }
 }
+
+export function safeSessionRemove(key: string): void {
+  try {
+    window.sessionStorage.removeItem(key);
+  } catch {
+    // Nothing to forget
+  }
+}
