@@ -114,7 +114,9 @@ export default function QRInvitation() {
 
           <p
             className="mt-8 text-3xl"
-            style={{ fontFamily: "var(--font-el-messiri)" }}
+            style={{
+              fontFamily: "var(--font-thuluth), var(--font-el-messiri)",
+            }}
             lang="ar"
             dir="rtl"
           >

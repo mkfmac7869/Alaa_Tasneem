@@ -8,15 +8,24 @@ import {
   El_Messiri,
   Manrope,
 } from "next/font/google";
+import localFont from "next/font/local";
 import { routing } from "@/i18n/routing";
 import { coupleNames, isPlaceholder, weddingConfig } from "@/config/wedding";
 import "../globals.css";
 
 /**
- * Only the weights that actually render are loaded. The Arabic pair
+ * Only the weights that actually render are loaded. The Arabic set
  * is preloaded because Arabic is the default (and primary) locale;
  * the Latin pair loads on demand via CSS when needed.
  */
+
+/** The couple's chosen Thuluth calligraphy — Arabic display only. */
+const thuluth = localFont({
+  src: "../../fonts/AThuluth-Regular.ttf",
+  variable: "--font-thuluth",
+  display: "swap",
+});
+
 const elMessiri = El_Messiri({
   subsets: ["arabic", "latin"],
   weight: ["400", "500", "600"],
@@ -119,7 +128,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={dir}
-      className={`${elMessiri.variable} ${almarai.variable} ${cormorant.variable} ${manrope.variable}`}
+      className={`${thuluth.variable} ${elMessiri.variable} ${almarai.variable} ${cormorant.variable} ${manrope.variable}`}
     >
       <body>
         <noscript>

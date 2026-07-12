@@ -38,7 +38,10 @@
 }
 
 html[lang="ar"] {
-  --font-display-current: var(--font-el-messiri), "El Messiri", serif;
+  /* Thuluth calligraphy for display; El Messiri fills any glyph
+     (e.g. digits) the calligraphic face does not cover. */
+  --font-display-current: var(--font-thuluth), var(--font-el-messiri),
+    "El Messiri", serif;
   --font-body-current: var(--font-almarai), "Almarai", system-ui, sans-serif;
 }
 
