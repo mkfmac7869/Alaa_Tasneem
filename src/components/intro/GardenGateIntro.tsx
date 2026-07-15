@@ -19,9 +19,10 @@ type Phase = "loading" | "sealed" | "opening" | "exit";
  * closed photograph and last frame the open courtyard, so it blends
  * seamlessly into the invitation.
  *
- * The scene fills the whole viewport in both orientations: a wide
- * plate/film on desktop, a portrait one on phones — never letterboxed.
- * A closed→open crossfade with doves stands in if the film can't play.
+ * The film starts buffering the moment the page loads, and the Open
+ * button waits until it can play — so a tap always plays the film
+ * (never the fallback). A closed→open crossfade with doves stands in
+ * only if the film errors or is impossibly slow.
  */
 
 const PORTRAIT = {
@@ -66,6 +67,9 @@ const DOVES: Array<{
  *  the moment the film ends; the names are already up by then. */
 const HOLD_MS = 0;
 
+/** If the film somehow never becomes playable, fall back after this. */
+const WAIT_LIMIT_MS = 15000;
+
 export default function GardenGateIntro({
   onOpened,
   onFinished,
@@ -78,9 +82,11 @@ export default function GardenGateIntro({
   const reduced = useReducedMotionPref();
 
   const [phase, setPhase] = useState<Phase>("loading");
+  const [staged, setStaged] = useState(false);
   const [wide, setWide] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
+  const [pending, setPending] = useState(false);
   const [contentOn, setContentOn] = useState(false);
 
   const timeouts = useRef<number[]>([]);
@@ -95,15 +101,17 @@ export default function GardenGateIntro({
   const A = wide ? WIDE : PORTRAIT;
 
   useEffect(() => {
-    const pending = timeouts.current;
-    return () => pending.forEach((id) => clearTimeout(id));
+    const pendingTimers = timeouts.current;
+    return () => pendingTimers.forEach((id) => clearTimeout(id));
   }, []);
 
-  // Desktop/landscape gets the wide scene; phones the portrait one
+  // Pick the wide or portrait scene up front, and stage it immediately
+  // so the film begins buffering the instant the page loads.
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 768px)");
+    setWide(mq.matches);
+    setStaged(true);
     const update = () => setWide(mq.matches);
-    update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
@@ -147,8 +155,7 @@ export default function GardenGateIntro({
     timeouts.current.push(window.setTimeout(fireFinished, 1900));
   };
 
-  /** Hold on the final frame (names + date over the garden), then
-   *  dissolve into the invitation. With HOLD_MS = 0 it flows straight. */
+  /** Hold on the final frame, then dissolve (HOLD_MS = 0 → straight). */
   const holdThenExit = () => {
     if (exitStarted.current) return;
     exitStarted.current = true;
@@ -156,8 +163,9 @@ export default function GardenGateIntro({
     timeouts.current.push(window.setTimeout(beginExit, HOLD_MS));
   };
 
-  /** Crossfade closed → open + doves — used when the film can't play. */
+  /** Crossfade closed → open + doves — used only if the film can't play. */
   const openWithCss = () => {
+    if (exitStarted.current || openedFired.current) return;
     setPhase("opening");
     timeouts.current.push(
       window.setTimeout(() => setContentOn(true), 2000),
@@ -165,8 +173,24 @@ export default function GardenGateIntro({
     );
   };
 
+  const playFilm = (video: HTMLVideoElement) => {
+    video
+      .play()
+      .then(() => {
+        setPhase("opening");
+        const total = Number.isFinite(video.duration)
+          ? video.duration * 1000
+          : 7000;
+        timeouts.current.push(window.setTimeout(holdThenExit, total + 1200));
+      })
+      .catch(() => {
+        setVideoFailed(true);
+        openWithCss();
+      });
+  };
+
   const open = () => {
-    if (phase !== "sealed") return;
+    if (phase !== "sealed" || pending) return;
     // Music may only begin from a user gesture — this is that gesture
     if (musicPreference() !== "off") void startMusic();
 
@@ -178,29 +202,41 @@ export default function GardenGateIntro({
     }
 
     const video = videoRef.current;
-    if (videoReady && !videoFailed && video) {
-      // Start playback inside the gesture; reveal the film once it
-      // truly begins (its first frame is the closed door).
-      video
-        .play()
-        .then(() => {
-          setPhase("opening");
-          const total = Number.isFinite(video.duration)
-            ? video.duration * 1000
-            : 7000;
-          timeouts.current.push(
-            window.setTimeout(holdThenExit, total + 1200)
-          );
-        })
-        .catch(() => {
-          setVideoFailed(true);
-          openWithCss();
-        });
+    if (videoFailed || !video) {
+      openWithCss();
+      return;
+    }
+    if (videoReady) {
+      playFilm(video);
       return;
     }
 
-    openWithCss();
+    // The film isn't buffered yet — wait for it, then play automatically.
+    setPending(true);
+    timeouts.current.push(
+      window.setTimeout(() => {
+        setPending((was) => {
+          if (was) openWithCss();
+          return false;
+        });
+      }, WAIT_LIMIT_MS)
+    );
   };
+
+  // A tap arrived before the film was ready: play the moment it is.
+  useEffect(() => {
+    if (!pending) return;
+    if (videoFailed) {
+      setPending(false);
+      openWithCss();
+      return;
+    }
+    if (videoReady && videoRef.current) {
+      setPending(false);
+      playFilm(videoRef.current);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pending, videoReady, videoFailed]);
 
   const skip = () => {
     if (phase === "sealed" && musicPreference() !== "off") void startMusic();
@@ -250,17 +286,8 @@ export default function GardenGateIntro({
       aria-modal="true"
       aria-label={t("loadingLabel", { couple })}
     >
-      {phase === "loading" ? (
-        <div className="texture-paper absolute inset-0 flex flex-col items-center justify-center gap-7 bg-ivory">
-          <div className="animate-breathe h-28 text-sage-deep">
-            <Logo
-              className="h-full w-auto"
-              title={t("loadingLabel", { couple })}
-            />
-          </div>
-          <div className="hairline-h w-16" />
-        </div>
-      ) : (
+      {/* the scene — staged (and the film buffering) from first paint */}
+      {staged && (
         <div
           className={`absolute inset-0 ${opening ? "stage-open" : ""}`}
           onClick={open}
@@ -311,8 +338,8 @@ export default function GardenGateIntro({
             />
           )}
 
-          {/* the film — its poster is the closed door, so sealed shows
-              the closed door until it plays */}
+          {/* the film — its poster is the closed door, so the sealed
+              state and the film's first frame are identical */}
           {!reduced && (
             // eslint-disable-next-line jsx-a11y/media-has-caption
             <video
@@ -323,7 +350,7 @@ export default function GardenGateIntro({
               muted
               playsInline
               preload="auto"
-              onCanPlayThrough={() => setVideoReady(true)}
+              onCanPlay={() => setVideoReady(true)}
               onError={() => setVideoFailed(true)}
               onEnded={holdThenExit}
               onTimeUpdate={(event) => {
@@ -392,15 +419,38 @@ export default function GardenGateIntro({
         </div>
       )}
 
+      {/* loading veil over the staging scene until fonts settle */}
+      {phase === "loading" && (
+        <div className="texture-paper absolute inset-0 z-[80] flex flex-col items-center justify-center gap-7 bg-ivory">
+          <div className="animate-breathe h-28 text-sage-deep">
+            <Logo
+              className="h-full w-auto"
+              title={t("loadingLabel", { couple })}
+            />
+          </div>
+          <div className="hairline-h w-16" />
+        </div>
+      )}
+
       {phase !== "loading" && (
         <button
           ref={openButtonRef}
           type="button"
           onClick={open}
-          className="stage-btn absolute bottom-9 left-1/2 z-[62] min-h-12 -translate-x-1/2 rounded-full border border-ink/20 bg-ivory/90 px-11 py-3 text-sm text-ink shadow-lg backdrop-blur-sm hover:border-olive hover:text-olive-deep"
+          disabled={pending}
+          aria-busy={pending}
+          className="stage-btn absolute bottom-9 left-1/2 z-[62] flex min-h-12 min-w-[11rem] -translate-x-1/2 items-center justify-center gap-1 rounded-full border border-ink/20 bg-ivory/90 px-11 py-3 text-sm text-ink shadow-lg backdrop-blur-sm hover:border-olive hover:text-olive-deep disabled:cursor-wait"
           aria-label={t("openAria", { couple })}
         >
-          {t("open")}
+          {pending ? (
+            <span className="flex items-end gap-1" aria-hidden>
+              <span className="load-dot h-1.5 w-1.5 rounded-full bg-ink/70" />
+              <span className="load-dot h-1.5 w-1.5 rounded-full bg-ink/70" />
+              <span className="load-dot h-1.5 w-1.5 rounded-full bg-ink/70" />
+            </span>
+          ) : (
+            t("open")
+          )}
         </button>
       )}
 
