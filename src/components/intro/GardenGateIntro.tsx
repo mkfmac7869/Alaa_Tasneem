@@ -28,7 +28,7 @@ const DOOR = { left: 18.5, top: 18.5, width: 63, height: 68 };
 
 /** How long the names + date linger on the open garden before the
  *  scene dissolves into the invitation — time to read, unhurried. */
-const HOLD_MS = 2800;
+const HOLD_MS = 1800;
 
 const DOVES: Array<{
   src: string;
