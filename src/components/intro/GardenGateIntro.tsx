@@ -26,9 +26,9 @@ type Phase = "loading" | "sealed" | "opening" | "exit";
 /** Arch opening inside the master plates, as fractions of the stage. */
 const DOOR = { left: 18.5, top: 18.5, width: 63, height: 68 };
 
-/** How long the names + date linger on the open garden before the
- *  scene dissolves into the invitation — time to read, unhurried. */
-const HOLD_MS = 1800;
+/** No lingering hold — the scene flows straight into the invitation
+ *  the moment the film ends; the names are already up by then. */
+const HOLD_MS = 0;
 
 const DOVES: Array<{
   src: string;
@@ -140,8 +140,11 @@ export default function GardenGateIntro({
   /** 3D leaf swing + layered doves — used when the film can't play. */
   const openWithCss = () => {
     setPhase("opening");
-    // doors swing + doves settle (~2.6 s), then the read-and-hold
-    timeouts.current.push(window.setTimeout(holdThenExit, 2600));
+    // names appear amid the doves, then flow straight into the page
+    timeouts.current.push(
+      window.setTimeout(() => setContentOn(true), 2200),
+      window.setTimeout(holdThenExit, 3800)
+    );
   };
 
   const open = () => {
@@ -371,7 +374,7 @@ export default function GardenGateIntro({
                   const v = event.currentTarget;
                   if (
                     Number.isFinite(v.duration) &&
-                    v.duration - v.currentTime < 2.9
+                    v.duration - v.currentTime < 3.6
                   ) {
                     setContentOn(true);
                   }
