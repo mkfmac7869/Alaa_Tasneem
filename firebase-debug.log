@@ -1,0 +1,37 @@
+[debug] [2026-07-15T05:23:50.387Z] ----------------------------------------------------------------------
+[debug] [2026-07-15T05:23:50.388Z] Command:       /Users/mk_fmac/.nvm/versions/node/v24.15.0/bin/node /Users/mk_fmac/.nvm/versions/node/v24.15.0/bin/firebase deploy --only hosting --project alaa-tasneem
+[debug] [2026-07-15T05:23:50.389Z] CLI Version:   15.23.0
+[debug] [2026-07-15T05:23:50.389Z] Platform:      darwin
+[debug] [2026-07-15T05:23:50.389Z] Node Version:  v24.15.0
+[debug] [2026-07-15T05:23:50.389Z] Detected Agent: claude-code_2-1-205_agent
+[debug] [2026-07-15T05:23:50.389Z] Time:          Wed Jul 15 2026 09:23:50 GMT+0400 (Gulf Standard Time)
+[debug] [2026-07-15T05:23:50.389Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-07-15T05:23:51.036Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-07-15T05:23:51.036Z] > authorizing via signed-in user (mk7869148e@gmail.com)
+[debug] [2026-07-15T05:23:51.036Z] [iam] checking project alaa-tasneem for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-07-15T05:23:51.040Z] Checked if tokens are valid: false, expires at: 1784016716307
+[debug] [2026-07-15T05:23:51.041Z] Checked if tokens are valid: false, expires at: 1784016716307
+[debug] [2026-07-15T05:23:51.041Z] > refreshing access token with scopes: []
+[debug] [2026-07-15T05:23:51.041Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-07-15T05:23:51.041Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-07-15T05:23:51.339Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-07-15T05:23:51.339Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-07-15T05:23:51.371Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/alaa-tasneem:testIamPermissions [none]
+[debug] [2026-07-15T05:23:51.372Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/alaa-tasneem:testIamPermissions  x-goog-user-project=alaa-tasneem
+[debug] [2026-07-15T05:23:51.372Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/alaa-tasneem:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-07-15T05:23:52.802Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/alaa-tasneem:testIamPermissions 403
+[debug] [2026-07-15T05:23:52.802Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/alaa-tasneem:testIamPermissions {"error":{"code":403,"message":"Caller does not have required permission to use project alaa-tasneem. Grant the caller the roles/serviceusage.serviceUsageConsumer role, or a custom role with the serviceusage.services.use permission, by visiting https://console.developers.google.com/iam-admin/iam?project=alaa-tasneem and then retry. Propagation of the new permission may take a few minutes.","status":"PERMISSION_DENIED","details":[{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"USER_PROJECT_DENIED","domain":"googleapis.com","metadata":{"containerInfo":"alaa-tasneem","service":"cloudresourcemanager.googleapis.com","consoleUrl":"https://console.developers.google.com/iam-admin/iam?project=alaa-tasneem","consumer":"projects/alaa-tasneem"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"Caller does not have required permission to use project alaa-tasneem. Grant the caller the roles/serviceusage.serviceUsageConsumer role, or a custom role with the serviceusage.services.use permission, by visiting https://console.developers.google.com/iam-admin/iam?project=alaa-tasneem and then retry. Propagation of the new permission may take a few minutes."},{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Google developer console IAM admin","url":"https://console.developers.google.com/iam-admin/iam?project=alaa-tasneem"}]}]}}
+[debug] [2026-07-15T05:23:52.803Z] [iam] error while checking permissions, command may fail: Request to https://cloudresourcemanager.googleapis.com/v1/projects/alaa-tasneem:testIamPermissions had HTTP Error: 403, Caller does not have required permission to use project alaa-tasneem. Grant the caller the roles/serviceusage.serviceUsageConsumer role, or a custom role with the serviceusage.services.use permission, by visiting https://console.developers.google.com/iam-admin/iam?project=alaa-tasneem and then retry. Propagation of the new permission may take a few minutes.
+[debug] [2026-07-15T05:23:52.803Z] Checked if tokens are valid: true, expires at: 1784096630339
+[debug] [2026-07-15T05:23:52.803Z] Checked if tokens are valid: true, expires at: 1784096630339
+[debug] [2026-07-15T05:23:52.804Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/alaa-tasneem [none]
+[debug] [2026-07-15T05:23:53.307Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/alaa-tasneem 403
+[debug] [2026-07-15T05:23:53.307Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/alaa-tasneem {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2026-07-15T05:23:53.307Z] Request to https://firebase.googleapis.com/v1beta1/projects/alaa-tasneem had HTTP Error: 403, The caller does not have permission
+[debug] [2026-07-15T05:23:53.568Z] FirebaseError: Request to https://firebase.googleapis.com/v1beta1/projects/alaa-tasneem had HTTP Error: 403, The caller does not have permission
+    at responseToError (/Users/mk_fmac/.nvm/versions/node/v24.15.0/lib/node_modules/firebase-tools/lib/responseToError.js:53:12)
+    at RetryOperation._fn (/Users/mk_fmac/.nvm/versions/node/v24.15.0/lib/node_modules/firebase-tools/lib/apiv2.js:415:77)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[error] 
+[error] Error: Failed to get Firebase project alaa-tasneem. Please make sure the project exists and your account has permission to access it.

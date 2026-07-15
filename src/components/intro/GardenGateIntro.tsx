@@ -2,46 +2,55 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Logo from "../Logo";
-import FloatingSprig from "../FloatingSprig";
 import { coupleNames } from "@/config/wedding";
-import { formatShortDate } from "@/lib/dates";
+import { formatGregorianDate } from "@/lib/dates";
 import { musicPreference, startMusic } from "@/lib/audio";
 import { useReducedMotionPref } from "@/lib/motion";
 
 type Phase = "loading" | "sealed" | "opening" | "exit";
 
-const PETALS = [
-  { src: "/images/sprig-blossom.webp", left: "16%", delay: 1.0, size: "w-8" },
-  { src: "/images/sprig-eucalyptus.webp", left: "36%", delay: 1.5, size: "w-7" },
-  { src: "/images/sprig-blossom.webp", left: "58%", delay: 1.2, size: "w-9" },
-  { src: "/images/sprig-eucalyptus.webp", left: "78%", delay: 1.7, size: "w-7" },
-];
-
 /**
- * Each leaf is one half of the painted door artwork — carved
- * olive wood, bronze strap hinges — swinging on its outer edge.
+ * The cinematic opening. A carved oak garden door wrapped in ivory
+ * roses swings open onto a sunlit courtyard and white doves fly out
+ * carrying the good news — played as a generated film whose first
+ * frame is the closed photograph and whose last frame is the open
+ * one, so the moment blends seamlessly into the invitation.
+ *
+ * If the film cannot play (data saver, save-data, slow network,
+ * reduced motion), a 3D leaf-swing fallback runs instead.
  */
-function GateLeaf({ side }: { side: "left" | "right" }) {
-  const isLeft = side === "left";
-  return (
-    <div
-      className={`gate-leaf gate-leaf-${side} absolute inset-y-0 z-20 w-1/2 ${
-        isLeft ? "left-0" : "right-0"
-      } [filter:drop-shadow(0_12px_22px_rgba(43,41,34,0.28))]`}
-    >
-      <Image
-        src={isLeft ? "/images/gate-leaf-l.webp" : "/images/gate-leaf-r.webp"}
-        alt=""
-        fill
-        priority
-        sizes="240px"
-        className="object-fill"
-      />
-    </div>
-  );
-}
+
+/** Arch opening inside the master plates, as fractions of the stage. */
+const DOOR = { left: 18.5, top: 18.5, width: 63, height: 68 };
+
+const DOVES: Array<{
+  src: string;
+  className: string;
+  delay: number;
+  duration: number;
+}> = [
+  {
+    src: "/images/doves-far.webp",
+    className: "inset-x-[14%] top-[20%] h-[56%]",
+    delay: 1.05,
+    duration: 2.6,
+  },
+  {
+    src: "/images/doves-near.webp",
+    className: "inset-x-[6%] top-[24%] h-[60%]",
+    delay: 1.35,
+    duration: 2.4,
+  },
+  {
+    src: "/images/dove-solo.webp",
+    className: "left-[10%] top-[42%] h-[34%] w-[45%]",
+    delay: 1.65,
+    duration: 2.1,
+  },
+];
 
 export default function GardenGateIntro({
   onOpened,
@@ -55,11 +64,17 @@ export default function GardenGateIntro({
   const reduced = useReducedMotionPref();
 
   const [phase, setPhase] = useState<Phase>("loading");
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+  const [contentOn, setContentOn] = useState(false);
+
   const timeouts = useRef<number[]>([]);
   const openedFired = useRef(false);
   const finishedFired = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   const openButtonRef = useRef<HTMLButtonElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const couple = coupleNames(locale);
 
@@ -101,9 +116,19 @@ export default function GardenGateIntro({
 
   const beginExit = () => {
     setPhase("exit");
+    setContentOn(true);
     fireOpened();
     // Safety net in case the transitionend event is swallowed
-    timeouts.current.push(window.setTimeout(fireFinished, 1250));
+    timeouts.current.push(window.setTimeout(fireFinished, 1500));
+  };
+
+  /** 3D leaf swing + layered doves — used when the film can't play. */
+  const openWithCss = () => {
+    setPhase("opening");
+    timeouts.current.push(
+      window.setTimeout(() => setContentOn(true), 2400),
+      window.setTimeout(beginExit, 4400)
+    );
   };
 
   const open = () => {
@@ -112,12 +137,34 @@ export default function GardenGateIntro({
     if (musicPreference() !== "off") void startMusic();
 
     if (reduced) {
-      beginExit();
+      setPhase("opening");
+      setContentOn(true);
+      timeouts.current.push(window.setTimeout(beginExit, 1700));
       return;
     }
 
-    setPhase("opening");
-    timeouts.current.push(window.setTimeout(beginExit, 2700));
+    const video = videoRef.current;
+    if (videoReady && !videoFailed && video) {
+      setPhase("opening");
+      setVideoPlaying(true);
+      video
+        .play()
+        .then(() => {
+          const total = Number.isFinite(video.duration)
+            ? video.duration * 1000
+            : 7000;
+          // Safety: continue even if `ended` never fires
+          timeouts.current.push(window.setTimeout(beginExit, total + 1800));
+        })
+        .catch(() => {
+          setVideoFailed(true);
+          setVideoPlaying(false);
+          openWithCss();
+        });
+      return;
+    }
+
+    openWithCss();
   };
 
   const skip = () => {
@@ -145,12 +192,13 @@ export default function GardenGateIntro({
   };
 
   const opening = phase === "opening" || phase === "exit";
+  const cinematic = videoReady && !videoFailed && !reduced;
 
   return (
     <div
       ref={overlayRef}
       data-intro-overlay
-      className={`texture-paper fixed inset-0 z-[70] flex items-center justify-center overflow-hidden bg-ivory ${
+      className={`fixed inset-0 z-[70] flex items-center justify-center overflow-hidden bg-ivory ${
         phase === "exit" ? "intro-exit" : ""
       }`}
       onKeyDown={handleKeyDown}
@@ -167,69 +215,8 @@ export default function GardenGateIntro({
       aria-modal="true"
       aria-label={t("loadingLabel", { couple })}
     >
-      {/* dressed stationery backdrop — never an empty page */}
-      <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(177,173,157,0.2),transparent_62%)]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-3 border border-ink/15 sm:inset-5"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute inset-[17px] border border-ink/10 sm:inset-[27px]"
-        aria-hidden
-      />
-      <Image
-        src="/images/floral-bouquet.webp"
-        alt=""
-        width={720}
-        height={760}
-        priority
-        aria-hidden
-        className="pointer-events-none absolute -left-10 -top-10 w-[46vw] max-w-[380px]"
-      />
-      <Image
-        src="/images/floral-bouquet.webp"
-        alt=""
-        width={720}
-        height={760}
-        priority
-        aria-hidden
-        className="pointer-events-none absolute -right-12 -top-12 w-[38vw] max-w-[300px] -scale-x-100 opacity-85"
-      />
-      <Image
-        src="/images/floral-bouquet.webp"
-        alt=""
-        width={720}
-        height={760}
-        aria-hidden
-        className="pointer-events-none absolute -left-12 bottom-0 w-[40vw] max-w-[320px] -scale-y-100 opacity-85"
-      />
-      <Image
-        src="/images/floral-bouquet.webp"
-        alt=""
-        width={720}
-        height={760}
-        aria-hidden
-        className="pointer-events-none absolute -right-10 bottom-0 w-[46vw] max-w-[380px] rotate-180"
-      />
-      <FloatingSprig
-        src="/images/sprig-eucalyptus.webp"
-        className="left-[12%] top-[38%] w-12 opacity-60 sm:left-[16%]"
-        duration={11}
-        rotate={-7}
-      />
-      <FloatingSprig
-        src="/images/sprig-blossom.webp"
-        className="right-[12%] top-[30%] w-11 opacity-60 sm:right-[17%]"
-        duration={13}
-        delay={1.2}
-        rotate={8}
-      />
-
       {phase === "loading" ? (
-        <div className="relative flex flex-col items-center gap-7">
+        <div className="texture-paper absolute inset-0 flex flex-col items-center justify-center gap-7 bg-ivory">
           <div className="animate-breathe h-28 text-sage-deep">
             <Logo
               className="h-full w-auto"
@@ -239,98 +226,149 @@ export default function GardenGateIntro({
           <div className="hairline-h w-16" />
         </div>
       ) : (
-        <div
-          className={`gate-scene relative flex flex-col items-center gap-8 px-6 ${
-            opening ? "gate-open" : ""
-          }`}
-        >
+        <>
+          {/* soft-focus fill for wide screens beyond the stage */}
+          <Image
+            src="/images/door-stage-open.webp"
+            alt=""
+            fill
+            priority
+            aria-hidden
+            sizes="100vw"
+            className="pointer-events-none scale-110 object-cover opacity-80 blur-2xl"
+          />
           <div
-            className="relative w-[min(78vw,440px)] cursor-pointer"
-            style={{ aspectRatio: "671 / 1046" }}
+            className="pointer-events-none absolute inset-0 bg-ivory/20"
+            aria-hidden
+          />
+
+          {/* ── the stage: fixed aspect, geometry-stable ─── */}
+          <div
+            className={`relative h-full shrink-0 ${
+              opening ? "stage-open" : ""
+            }`}
+            style={{ aspectRatio: "768 / 1376" }}
             onClick={open}
             aria-hidden
           >
-            {/* rising petals */}
-            {PETALS.map(({ src, left, delay, size }, i) => (
-              <Image
-                key={i}
-                src={src}
-                alt=""
-                width={80}
-                height={80}
-                aria-hidden
-                className={`gate-petal pointer-events-none absolute top-[22%] z-50 ${size}`}
-                style={
-                  { left, "--petal-delay": `${delay}s` } as React.CSSProperties
-                }
-              />
-            ))}
-
-            {/* soft ground shadow */}
-            <div className="absolute -bottom-7 left-1/2 h-8 w-3/4 -translate-x-1/2 rounded-[100%] bg-charcoal/15 blur-xl" />
-
-            {/* the invitation card waiting behind the doors */}
-            <div className="gate-reveal texture-paper absolute inset-x-[2%] inset-y-[1%] z-10 overflow-hidden rounded-t-[999px] border border-ink/25 bg-ivory shadow-[0_14px_40px_rgba(58,54,44,0.2)]">
-              <Image
-                src="/images/floral-bouquet.webp"
-                alt=""
-                width={220}
-                height={232}
-                aria-hidden
-                className="pointer-events-none absolute -left-5 top-8 w-24 opacity-90"
-              />
-              <Image
-                src="/images/floral-bouquet.webp"
-                alt=""
-                width={220}
-                height={232}
-                aria-hidden
-                className="pointer-events-none absolute -right-5 -bottom-4 w-24 rotate-180 opacity-90"
-              />
-              <div className="relative flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-                <Logo className="h-16 w-auto text-sage-deep" />
-                <p className="font-display text-3xl text-ink">{couple}</p>
-                <div className="hairline-h w-12" aria-hidden />
-                <p className="lining-nums text-xs tracking-[0.22em] text-sage-deep">
-                  {formatShortDate(locale)}
-                </p>
-              </div>
-            </div>
-
-            {/* the gate itself */}
-            <GateLeaf side="left" />
-            <GateLeaf side="right" />
-
-            {/* florals planted on the gate posts */}
+            {/* the courtyard, waiting behind the doors */}
             <Image
-              src="/images/floral-bouquet.webp"
+              src="/images/door-stage-open.webp"
               alt=""
-              width={280}
-              height={296}
+              fill
               priority
-              aria-hidden
-              className="pointer-events-none absolute -left-8 -top-7 z-30 w-28 rotate-[8deg] sm:w-32"
-            />
-            <Image
-              src="/images/floral-bouquet.webp"
-              alt=""
-              width={280}
-              height={296}
-              priority
-              aria-hidden
-              className="pointer-events-none absolute -right-8 -top-7 z-30 w-28 -scale-x-100 rotate-[-8deg] sm:w-32"
+              sizes="(min-width: 768px) 56vh, 125vw"
+              className="object-fill"
             />
 
-            {/* the latch, carrying the couple's mark */}
+            {/* fallback choreography — only when the film can't play */}
+            {!cinematic && (
+              <>
+                <Image
+                  src="/images/door-stage-closed.webp"
+                  alt=""
+                  fill
+                  priority
+                  sizes="(min-width: 768px) 56vh, 125vw"
+                  className="stage-closed object-fill"
+                />
+                <div
+                  className="stage-leaf stage-leaf-left"
+                  style={{
+                    left: `${DOOR.left}%`,
+                    top: `${DOOR.top}%`,
+                    width: `${DOOR.width / 2 + 0.2}%`,
+                    height: `${DOOR.height}%`,
+                  }}
+                >
+                  <Image
+                    src="/images/door-leaf-left.webp"
+                    alt=""
+                    fill
+                    priority
+                    sizes="30vh"
+                    className="object-fill"
+                  />
+                </div>
+                <div
+                  className="stage-leaf stage-leaf-right"
+                  style={{
+                    left: `${DOOR.left + DOOR.width / 2 - 0.2}%`,
+                    top: `${DOOR.top}%`,
+                    width: `${DOOR.width / 2 + 0.2}%`,
+                    height: `${DOOR.height}%`,
+                  }}
+                >
+                  <Image
+                    src="/images/door-leaf-right.webp"
+                    alt=""
+                    fill
+                    priority
+                    sizes="30vh"
+                    className="object-fill"
+                  />
+                </div>
+                {DOVES.map(({ src, className, delay, duration }, i) => (
+                  <div
+                    key={i}
+                    className={`dove-layer absolute z-40 ${className}`}
+                    style={
+                      {
+                        "--dove-delay": `${delay}s`,
+                        "--dove-duration": `${duration}s`,
+                      } as CSSProperties
+                    }
+                  >
+                    <Image
+                      src={src}
+                      alt=""
+                      fill
+                      sizes="60vh"
+                      className="object-contain"
+                    />
+                  </div>
+                ))}
+              </>
+            )}
+
+            {/* the film: closed photograph → doors open → doves fly */}
+            {!reduced && (
+              // eslint-disable-next-line jsx-a11y/media-has-caption
+              <video
+                ref={videoRef}
+                className={`stage-video absolute inset-0 z-[25] h-full w-full object-cover ${
+                  videoPlaying ? "is-playing" : ""
+                }`}
+                src="/videos/door-opening.mp4"
+                poster="/images/door-stage-closed.webp"
+                muted
+                playsInline
+                preload="auto"
+                onCanPlayThrough={() => setVideoReady(true)}
+                onError={() => setVideoFailed(true)}
+                onEnded={beginExit}
+                onTimeUpdate={(event) => {
+                  const v = event.currentTarget;
+                  if (
+                    Number.isFinite(v.duration) &&
+                    v.duration - v.currentTime < 2.2
+                  ) {
+                    setContentOn(true);
+                  }
+                }}
+              />
+            )}
+
+            {/* the couple's mark on the seam, released on opening */}
             <div
-              className="gate-latch absolute z-40 grid h-16 w-16 place-items-center rounded-full"
+              className="stage-latch absolute z-30 grid h-16 w-16 place-items-center rounded-full"
               style={{
                 left: "calc(50% - 32px)",
-                top: "calc(52% - 32px)",
+                top: "calc(50% - 32px)",
                 background:
                   "radial-gradient(circle at 35% 30%, #57604a, #494e3b 62%, #3d4232)",
                 boxShadow:
-                  "0 3px 12px rgba(32,30,25,0.35), inset 0 1px 2px rgba(247,242,233,0.28), inset 0 -2px 7px rgba(32,30,25,0.42)",
+                  "0 3px 12px rgba(32,30,25,0.45), inset 0 1px 2px rgba(247,242,233,0.28), inset 0 -2px 7px rgba(32,30,25,0.42)",
               }}
             >
               <span
@@ -339,25 +377,63 @@ export default function GardenGateIntro({
               />
               <Logo className="h-10 w-auto text-ivory/95" />
             </div>
+
+            {/* the invitation, standing in the doorway */}
+            <div
+              className={`stage-content absolute inset-x-[8%] top-[30%] z-50 text-center text-ivory ${
+                contentOn ? "is-on" : ""
+              }`}
+            >
+              <div
+                className="pointer-events-none absolute -inset-x-10 -inset-y-12 bg-[radial-gradient(ellipse_at_center,rgba(32,30,25,0.5),transparent_72%)]"
+                aria-hidden
+              />
+              <div className="relative">
+                <Logo className="mx-auto h-14 w-auto text-ivory" />
+                <p className="kicker mt-4 !text-ivory/85">{t("stageKicker")}</p>
+                <p
+                  className={`mt-3 font-display text-ivory ${
+                    locale === "ar" ? "text-5xl leading-[1.4]" : "text-4xl"
+                  }`}
+                  style={{ textShadow: "0 2px 18px rgba(32,30,25,0.55)" }}
+                >
+                  {couple}
+                </p>
+                <div
+                  className="mx-auto mt-5 h-px w-14 bg-ivory/50"
+                  aria-hidden
+                />
+                <p className="lining-nums mt-4 text-sm tracking-[0.2em] text-ivory/95">
+                  {formatGregorianDate(locale)}
+                </p>
+              </div>
+            </div>
           </div>
 
+          {/* controls over the scene */}
           <button
             ref={openButtonRef}
             type="button"
             onClick={open}
-            className="gate-btn min-h-12 rounded-full border border-ink/25 bg-ivory/70 px-11 py-3 text-sm text-ink hover:border-olive hover:text-olive-deep"
+            className="stage-btn absolute bottom-9 left-1/2 min-h-12 -translate-x-1/2 rounded-full border border-ink/20 bg-ivory/90 px-11 py-3 text-sm text-ink shadow-lg backdrop-blur-sm hover:border-olive hover:text-olive-deep"
             aria-label={t("openAria", { couple })}
           >
             {t("open")}
           </button>
-        </div>
+        </>
       )}
+
+      {/* ivory light-wash that blends the exit into the invitation */}
+      <div
+        className="stage-veil pointer-events-none absolute inset-0 z-[60] bg-ivory"
+        aria-hidden
+      />
 
       {phase !== "loading" && phase !== "exit" && (
         <button
           type="button"
           onClick={skip}
-          className="absolute top-5 end-5 p-2 text-xs text-ink-soft underline-offset-4 hover:underline"
+          className="absolute top-5 end-5 z-[65] rounded-full bg-ivory/70 px-3 py-2 text-xs text-ink-soft backdrop-blur-sm underline-offset-4 hover:underline"
         >
           {t("skip")}
         </button>
