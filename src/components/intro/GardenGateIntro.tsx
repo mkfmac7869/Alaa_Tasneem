@@ -26,6 +26,10 @@ type Phase = "loading" | "sealed" | "opening" | "exit";
 /** Arch opening inside the master plates, as fractions of the stage. */
 const DOOR = { left: 18.5, top: 18.5, width: 63, height: 68 };
 
+/** How long the names + date linger on the open garden before the
+ *  scene dissolves into the invitation — time to read, unhurried. */
+const HOLD_MS = 2800;
+
 const DOVES: Array<{
   src: string;
   className: string;
@@ -114,21 +118,30 @@ export default function GardenGateIntro({
     onFinished();
   };
 
+  const exitStarted = useRef(false);
+
   const beginExit = () => {
     setPhase("exit");
     setContentOn(true);
     fireOpened();
     // Safety net in case the transitionend event is swallowed
-    timeouts.current.push(window.setTimeout(fireFinished, 1500));
+    timeouts.current.push(window.setTimeout(fireFinished, 1900));
+  };
+
+  /** Hold on the final frame — names + date over the garden — so the
+   *  guest can read, then dissolve gently into the invitation. */
+  const holdThenExit = () => {
+    if (exitStarted.current) return;
+    exitStarted.current = true;
+    setContentOn(true);
+    timeouts.current.push(window.setTimeout(beginExit, HOLD_MS));
   };
 
   /** 3D leaf swing + layered doves — used when the film can't play. */
   const openWithCss = () => {
     setPhase("opening");
-    timeouts.current.push(
-      window.setTimeout(() => setContentOn(true), 2400),
-      window.setTimeout(beginExit, 4400)
-    );
+    // doors swing + doves settle (~2.6 s), then the read-and-hold
+    timeouts.current.push(window.setTimeout(holdThenExit, 2600));
   };
 
   const open = () => {
@@ -139,26 +152,30 @@ export default function GardenGateIntro({
     if (reduced) {
       setPhase("opening");
       setContentOn(true);
-      timeouts.current.push(window.setTimeout(beginExit, 1700));
+      timeouts.current.push(window.setTimeout(beginExit, 3200));
       return;
     }
 
     const video = videoRef.current;
     if (videoReady && !videoFailed && video) {
-      setPhase("opening");
-      setVideoPlaying(true);
+      // Start playback inside the gesture; only reveal the film once
+      // it truly begins (its first frame is the closed door, so the
+      // hand-off from the still photograph is seamless).
       video
         .play()
         .then(() => {
+          setPhase("opening");
+          setVideoPlaying(true);
           const total = Number.isFinite(video.duration)
             ? video.duration * 1000
             : 7000;
-          // Safety: continue even if `ended` never fires
-          timeouts.current.push(window.setTimeout(beginExit, total + 1800));
+          // Safety: hold-then-exit even if `ended` never fires
+          timeouts.current.push(
+            window.setTimeout(holdThenExit, total + 1200)
+          );
         })
         .catch(() => {
           setVideoFailed(true);
-          setVideoPlaying(false);
           openWithCss();
         });
       return;
@@ -349,12 +366,12 @@ export default function GardenGateIntro({
                 preload="auto"
                 onCanPlayThrough={() => setVideoReady(true)}
                 onError={() => setVideoFailed(true)}
-                onEnded={beginExit}
+                onEnded={holdThenExit}
                 onTimeUpdate={(event) => {
                   const v = event.currentTarget;
                   if (
                     Number.isFinite(v.duration) &&
-                    v.duration - v.currentTime < 2.2
+                    v.duration - v.currentTime < 2.9
                   ) {
                     setContentOn(true);
                   }
