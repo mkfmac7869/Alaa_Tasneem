@@ -15,20 +15,26 @@ type Phase = "loading" | "sealed" | "opening" | "exit";
 /**
  * The cinematic opening. A carved oak garden door wrapped in ivory
  * roses swings open onto a sunlit courtyard and white doves fly out
- * carrying the good news — played as a generated film whose first
- * frame is the closed photograph and whose last frame is the open
- * one, so the moment blends seamlessly into the invitation.
+ * carrying the good news — a generated film whose first frame is the
+ * closed photograph and last frame the open courtyard, so it blends
+ * seamlessly into the invitation.
  *
- * If the film cannot play (data saver, save-data, slow network,
- * reduced motion), a 3D leaf-swing fallback runs instead.
+ * The scene fills the whole viewport in both orientations: a wide
+ * plate/film on desktop, a portrait one on phones — never letterboxed.
+ * A closed→open crossfade with doves stands in if the film can't play.
  */
 
-/** Arch opening inside the master plates, as fractions of the stage. */
-const DOOR = { left: 18.5, top: 18.5, width: 63, height: 68 };
+const PORTRAIT = {
+  closed: "/images/door-stage-closed.webp",
+  open: "/images/door-stage-open.webp",
+  video: "/videos/door-opening.mp4",
+};
 
-/** No lingering hold — the scene flows straight into the invitation
- *  the moment the film ends; the names are already up by then. */
-const HOLD_MS = 0;
+const WIDE = {
+  closed: "/images/door-wide-closed.webp",
+  open: "/images/door-wide-open.webp",
+  video: "/videos/door-opening-wide.mp4",
+};
 
 const DOVES: Array<{
   src: string;
@@ -38,23 +44,27 @@ const DOVES: Array<{
 }> = [
   {
     src: "/images/doves-far.webp",
-    className: "inset-x-[14%] top-[20%] h-[56%]",
+    className: "inset-x-[24%] top-[20%] h-[46%]",
     delay: 1.05,
     duration: 2.6,
   },
   {
     src: "/images/doves-near.webp",
-    className: "inset-x-[6%] top-[24%] h-[60%]",
+    className: "inset-x-[18%] top-[24%] h-[50%]",
     delay: 1.35,
     duration: 2.4,
   },
   {
     src: "/images/dove-solo.webp",
-    className: "left-[10%] top-[42%] h-[34%] w-[45%]",
+    className: "left-[28%] top-[40%] h-[28%] w-[30%]",
     delay: 1.65,
     duration: 2.1,
   },
 ];
+
+/** No lingering hold — the scene flows straight into the invitation
+ *  the moment the film ends; the names are already up by then. */
+const HOLD_MS = 0;
 
 export default function GardenGateIntro({
   onOpened,
@@ -68,23 +78,34 @@ export default function GardenGateIntro({
   const reduced = useReducedMotionPref();
 
   const [phase, setPhase] = useState<Phase>("loading");
+  const [wide, setWide] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
-  const [videoPlaying, setVideoPlaying] = useState(false);
   const [contentOn, setContentOn] = useState(false);
 
   const timeouts = useRef<number[]>([]);
   const openedFired = useRef(false);
   const finishedFired = useRef(false);
+  const exitStarted = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   const openButtonRef = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const couple = coupleNames(locale);
+  const A = wide ? WIDE : PORTRAIT;
 
   useEffect(() => {
     const pending = timeouts.current;
     return () => pending.forEach((id) => clearTimeout(id));
+  }, []);
+
+  // Desktop/landscape gets the wide scene; phones the portrait one
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const update = () => setWide(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
 
   // Loading → sealed once fonts have settled (1.6 s at most)
@@ -118,8 +139,6 @@ export default function GardenGateIntro({
     onFinished();
   };
 
-  const exitStarted = useRef(false);
-
   const beginExit = () => {
     setPhase("exit");
     setContentOn(true);
@@ -128,8 +147,8 @@ export default function GardenGateIntro({
     timeouts.current.push(window.setTimeout(fireFinished, 1900));
   };
 
-  /** Hold on the final frame — names + date over the garden — so the
-   *  guest can read, then dissolve gently into the invitation. */
+  /** Hold on the final frame (names + date over the garden), then
+   *  dissolve into the invitation. With HOLD_MS = 0 it flows straight. */
   const holdThenExit = () => {
     if (exitStarted.current) return;
     exitStarted.current = true;
@@ -137,13 +156,12 @@ export default function GardenGateIntro({
     timeouts.current.push(window.setTimeout(beginExit, HOLD_MS));
   };
 
-  /** 3D leaf swing + layered doves — used when the film can't play. */
+  /** Crossfade closed → open + doves — used when the film can't play. */
   const openWithCss = () => {
     setPhase("opening");
-    // names appear amid the doves, then flow straight into the page
     timeouts.current.push(
-      window.setTimeout(() => setContentOn(true), 2200),
-      window.setTimeout(holdThenExit, 3800)
+      window.setTimeout(() => setContentOn(true), 2000),
+      window.setTimeout(holdThenExit, 3600)
     );
   };
 
@@ -161,18 +179,15 @@ export default function GardenGateIntro({
 
     const video = videoRef.current;
     if (videoReady && !videoFailed && video) {
-      // Start playback inside the gesture; only reveal the film once
-      // it truly begins (its first frame is the closed door, so the
-      // hand-off from the still photograph is seamless).
+      // Start playback inside the gesture; reveal the film once it
+      // truly begins (its first frame is the closed door).
       video
         .play()
         .then(() => {
           setPhase("opening");
-          setVideoPlaying(true);
           const total = Number.isFinite(video.duration)
             ? video.duration * 1000
             : 7000;
-          // Safety: hold-then-exit even if `ended` never fires
           timeouts.current.push(
             window.setTimeout(holdThenExit, total + 1200)
           );
@@ -218,7 +233,7 @@ export default function GardenGateIntro({
     <div
       ref={overlayRef}
       data-intro-overlay
-      className={`fixed inset-0 z-[70] flex items-center justify-center overflow-hidden bg-ivory ${
+      className={`fixed inset-0 z-[70] overflow-hidden bg-ivory ${
         phase === "exit" ? "intro-exit" : ""
       }`}
       onKeyDown={handleKeyDown}
@@ -246,167 +261,109 @@ export default function GardenGateIntro({
           <div className="hairline-h w-16" />
         </div>
       ) : (
-        <>
-          {/* soft-focus fill for wide screens beyond the stage */}
+        <div
+          className={`absolute inset-0 ${opening ? "stage-open" : ""}`}
+          onClick={open}
+          aria-hidden
+        >
+          {/* the courtyard, always behind */}
           <Image
-            src="/images/door-stage-open.webp"
+            src={A.open}
             alt=""
             fill
             priority
-            aria-hidden
             sizes="100vw"
-            className="pointer-events-none scale-110 object-cover opacity-80 blur-2xl"
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-ivory/20"
-            aria-hidden
+            className="object-cover"
           />
 
-          {/* ── the stage: fixed aspect, geometry-stable ─── */}
-          <div
-            className={`relative h-full shrink-0 ${
-              opening ? "stage-open" : ""
-            }`}
-            style={{ aspectRatio: "768 / 1376" }}
-            onClick={open}
-            aria-hidden
-          >
-            {/* the courtyard, waiting behind the doors */}
+          {/* doves fly out (crossfade fallback only) */}
+          {!cinematic &&
+            DOVES.map(({ src, className, delay, duration }, i) => (
+              <div
+                key={i}
+                className={`dove-layer absolute z-40 ${className}`}
+                style={
+                  {
+                    "--dove-delay": `${delay}s`,
+                    "--dove-duration": `${duration}s`,
+                  } as CSSProperties
+                }
+              >
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  sizes="60vw"
+                  className="object-contain"
+                />
+              </div>
+            ))}
+
+          {/* sealed: the closed door, crossfading away on open */}
+          {!cinematic && (
             <Image
-              src="/images/door-stage-open.webp"
+              src={A.closed}
               alt=""
               fill
               priority
-              sizes="(min-width: 768px) 56vh, 125vw"
-              className="object-fill"
+              sizes="100vw"
+              className="stage-closed z-10 object-cover"
             />
+          )}
 
-            {/* sealed: the closed photograph covers the courtyard until
-                the doors open — in BOTH the film and fallback paths */}
-            <Image
-              src="/images/door-stage-closed.webp"
-              alt=""
-              fill
-              priority
-              sizes="(min-width: 768px) 56vh, 125vw"
-              className="stage-closed z-10 object-fill"
-            />
-
-            {/* fallback choreography — only when the film can't play */}
-            {!cinematic && (
-              <>
-                <div
-                  className="stage-leaf stage-leaf-left z-20"
-                  style={{
-                    left: `${DOOR.left}%`,
-                    top: `${DOOR.top}%`,
-                    width: `${DOOR.width / 2 + 0.2}%`,
-                    height: `${DOOR.height}%`,
-                  }}
-                >
-                  <Image
-                    src="/images/door-leaf-left.webp"
-                    alt=""
-                    fill
-                    priority
-                    sizes="30vh"
-                    className="object-fill"
-                  />
-                </div>
-                <div
-                  className="stage-leaf stage-leaf-right z-20"
-                  style={{
-                    left: `${DOOR.left + DOOR.width / 2 - 0.2}%`,
-                    top: `${DOOR.top}%`,
-                    width: `${DOOR.width / 2 + 0.2}%`,
-                    height: `${DOOR.height}%`,
-                  }}
-                >
-                  <Image
-                    src="/images/door-leaf-right.webp"
-                    alt=""
-                    fill
-                    priority
-                    sizes="30vh"
-                    className="object-fill"
-                  />
-                </div>
-                {DOVES.map(({ src, className, delay, duration }, i) => (
-                  <div
-                    key={i}
-                    className={`dove-layer absolute z-40 ${className}`}
-                    style={
-                      {
-                        "--dove-delay": `${delay}s`,
-                        "--dove-duration": `${duration}s`,
-                      } as CSSProperties
-                    }
-                  >
-                    <Image
-                      src={src}
-                      alt=""
-                      fill
-                      sizes="60vh"
-                      className="object-contain"
-                    />
-                  </div>
-                ))}
-              </>
-            )}
-
-            {/* the film: closed photograph → doors open → doves fly */}
-            {!reduced && (
-              // eslint-disable-next-line jsx-a11y/media-has-caption
-              <video
-                ref={videoRef}
-                className={`stage-video absolute inset-0 z-[25] h-full w-full object-cover ${
-                  videoPlaying ? "is-playing" : ""
-                }`}
-                src="/videos/door-opening.mp4"
-                poster="/images/door-stage-closed.webp"
-                muted
-                playsInline
-                preload="auto"
-                onCanPlayThrough={() => setVideoReady(true)}
-                onError={() => setVideoFailed(true)}
-                onEnded={holdThenExit}
-                onTimeUpdate={(event) => {
-                  const v = event.currentTarget;
-                  if (
-                    Number.isFinite(v.duration) &&
-                    v.duration - v.currentTime < 3.6
-                  ) {
-                    setContentOn(true);
-                  }
-                }}
-              />
-            )}
-
-            {/* the couple's mark on the seam, released on opening */}
-            <div
-              className="stage-latch absolute z-30 grid h-16 w-16 place-items-center rounded-full"
-              style={{
-                left: "calc(50% - 32px)",
-                top: "calc(50% - 32px)",
-                background:
-                  "radial-gradient(circle at 35% 30%, #57604a, #494e3b 62%, #3d4232)",
-                boxShadow:
-                  "0 3px 12px rgba(32,30,25,0.45), inset 0 1px 2px rgba(247,242,233,0.28), inset 0 -2px 7px rgba(32,30,25,0.42)",
+          {/* the film — its poster is the closed door, so sealed shows
+              the closed door until it plays */}
+          {!reduced && (
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <video
+              ref={videoRef}
+              className="stage-video absolute inset-0 z-20 h-full w-full object-cover"
+              src={A.video}
+              poster={A.closed}
+              muted
+              playsInline
+              preload="auto"
+              onCanPlayThrough={() => setVideoReady(true)}
+              onError={() => setVideoFailed(true)}
+              onEnded={holdThenExit}
+              onTimeUpdate={(event) => {
+                const v = event.currentTarget;
+                if (
+                  Number.isFinite(v.duration) &&
+                  v.duration - v.currentTime < 3.6
+                ) {
+                  setContentOn(true);
+                }
               }}
-            >
-              <span
-                className="pointer-events-none absolute inset-[5px] rounded-full border border-ivory/30"
-                aria-hidden
-              />
-              <Logo className="h-10 w-auto text-ivory/95" />
-            </div>
+            />
+          )}
 
-            {/* the invitation, standing in the doorway */}
-            <div
-              className={`stage-content absolute inset-x-[8%] top-[30%] z-50 text-center text-ivory ${
-                contentOn ? "is-on" : ""
-              }`}
-            >
+          {/* the couple's mark on the seam, released on opening */}
+          <div
+            className="stage-latch absolute z-30 grid h-16 w-16 place-items-center rounded-full"
+            style={{
+              left: "calc(50% - 32px)",
+              top: "calc(51% - 32px)",
+              background:
+                "radial-gradient(circle at 35% 30%, #57604a, #494e3b 62%, #3d4232)",
+              boxShadow:
+                "0 3px 12px rgba(32,30,25,0.45), inset 0 1px 2px rgba(247,242,233,0.28), inset 0 -2px 7px rgba(32,30,25,0.42)",
+            }}
+          >
+            <span
+              className="pointer-events-none absolute inset-[5px] rounded-full border border-ivory/30"
+              aria-hidden
+            />
+            <Logo className="h-10 w-auto text-ivory/95" />
+          </div>
+
+          {/* the invitation, standing in the doorway */}
+          <div
+            className={`stage-content absolute inset-x-0 top-[26%] z-50 px-6 text-center text-ivory ${
+              contentOn ? "is-on" : ""
+            }`}
+          >
+            <div className="relative mx-auto max-w-md">
               <div
                 className="pointer-events-none absolute -inset-x-10 -inset-y-12 bg-[radial-gradient(ellipse_at_center,rgba(32,30,25,0.5),transparent_72%)]"
                 aria-hidden
@@ -432,18 +389,19 @@ export default function GardenGateIntro({
               </div>
             </div>
           </div>
+        </div>
+      )}
 
-          {/* controls over the scene */}
-          <button
-            ref={openButtonRef}
-            type="button"
-            onClick={open}
-            className="stage-btn absolute bottom-9 left-1/2 min-h-12 -translate-x-1/2 rounded-full border border-ink/20 bg-ivory/90 px-11 py-3 text-sm text-ink shadow-lg backdrop-blur-sm hover:border-olive hover:text-olive-deep"
-            aria-label={t("openAria", { couple })}
-          >
-            {t("open")}
-          </button>
-        </>
+      {phase !== "loading" && (
+        <button
+          ref={openButtonRef}
+          type="button"
+          onClick={open}
+          className="stage-btn absolute bottom-9 left-1/2 z-[62] min-h-12 -translate-x-1/2 rounded-full border border-ink/20 bg-ivory/90 px-11 py-3 text-sm text-ink shadow-lg backdrop-blur-sm hover:border-olive hover:text-olive-deep"
+          aria-label={t("openAria", { couple })}
+        >
+          {t("open")}
+        </button>
       )}
 
       {/* ivory light-wash that blends the exit into the invitation */}

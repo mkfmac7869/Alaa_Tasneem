@@ -255,34 +255,6 @@ html[lang="ar"] {
   opacity: 0;
 }
 
-.stage-leaf {
-  position: absolute;
-  transition:
-    transform 1.6s var(--ease-drape) 0.35s,
-    opacity 0.3s ease 1.8s;
-  will-change: transform;
-}
-
-.stage-leaf-left {
-  transform-origin: left center;
-  transform: perspective(1500px) rotateY(0deg);
-}
-
-.stage-leaf-right {
-  transform-origin: right center;
-  transform: perspective(1500px) rotateY(0deg);
-}
-
-.stage-open .stage-leaf-left {
-  transform: perspective(1500px) rotateY(-104deg);
-  opacity: 0;
-}
-
-.stage-open .stage-leaf-right {
-  transform: perspective(1500px) rotateY(104deg);
-  opacity: 0;
-}
-
 .stage-latch {
   transition:
     transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -338,16 +310,6 @@ html[lang="ar"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stage-leaf {
-    transition: opacity 0.5s ease 0.1s;
-  }
-
-  .stage-open .stage-leaf-left,
-  .stage-open .stage-leaf-right {
-    transform: none;
-    opacity: 0;
-  }
-
   .stage-open .dove-layer {
     animation: none;
   }
@@ -395,15 +357,8 @@ html[lang="ar"] {
   opacity: 0.5;
 }
 
-/* the cinematic take, once it is ready to play */
-.stage-video {
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-.stage-video.is-playing {
-  opacity: 1;
-}
+/* the cinematic take shows its closed-door poster until it plays, so
+   the sealed state and the film's first frame are one and the same */
 
 @media (prefers-reduced-motion: reduce) {
   .reveal,
