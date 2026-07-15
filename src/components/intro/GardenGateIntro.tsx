@@ -261,19 +261,22 @@ export default function GardenGateIntro({
               className="object-fill"
             />
 
+            {/* sealed: the closed photograph covers the courtyard until
+                the doors open — in BOTH the film and fallback paths */}
+            <Image
+              src="/images/door-stage-closed.webp"
+              alt=""
+              fill
+              priority
+              sizes="(min-width: 768px) 56vh, 125vw"
+              className="stage-closed z-10 object-fill"
+            />
+
             {/* fallback choreography — only when the film can't play */}
             {!cinematic && (
               <>
-                <Image
-                  src="/images/door-stage-closed.webp"
-                  alt=""
-                  fill
-                  priority
-                  sizes="(min-width: 768px) 56vh, 125vw"
-                  className="stage-closed object-fill"
-                />
                 <div
-                  className="stage-leaf stage-leaf-left"
+                  className="stage-leaf stage-leaf-left z-20"
                   style={{
                     left: `${DOOR.left}%`,
                     top: `${DOOR.top}%`,
@@ -291,7 +294,7 @@ export default function GardenGateIntro({
                   />
                 </div>
                 <div
-                  className="stage-leaf stage-leaf-right"
+                  className="stage-leaf stage-leaf-right z-20"
                   style={{
                     left: `${DOOR.left + DOOR.width / 2 - 0.2}%`,
                     top: `${DOOR.top}%`,
